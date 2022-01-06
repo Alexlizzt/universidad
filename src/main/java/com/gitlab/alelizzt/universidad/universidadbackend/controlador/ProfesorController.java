@@ -32,7 +32,7 @@ public class ProfesorController extends PersonaController {
         nombreEntidad = "Profesor";
     }
 
-    /*@Override
+    /**
     @GetMapping
     public List<Persona> obtenerTodos(){
         Stream<Persona> personas = ((List<Persona>) service.findAll()).stream();
@@ -41,7 +41,7 @@ public class ProfesorController extends PersonaController {
             throw new BadRequestException("No se ha encontrado algun profesor");
         }
         return profesores;
-    }*/
+    }**/
 
     @GetMapping("/carrera")
     public List<Persona> buscarProfesoresPorCarrera(@RequestParam String carrera){
@@ -52,36 +52,15 @@ public class ProfesorController extends PersonaController {
         return profesoresByCarrera;
     }
 
-    /**
-     * TODO
-     * @param idProfesor
-     * @param idCarreras
-     * @return
-     */
     @PutMapping("{idProfesor}/carrera/{idCarreras}")
-    public Persona asignarCarrerasProfesor(@PathVariable Integer idProfesor, @PathVariable List<Integer> idCarreras){
+    public Persona asignarCarrerasProfesor(@PathVariable Integer idProfesor, @PathVariable Set<Carrera> idCarreras){
         Optional<Persona> oProfesor = service.findById(idProfesor);
         if(!oProfesor.isPresent()){
             throw new BadRequestException(String.format("El/La profesor/a con id %d no existe", idProfesor));
         }
+        Profesor profesor= (Profesor) oProfesor.get();
+        profesor.setCarrera(idCarreras);
 
-       /* List<Carrera> carreras = null;
-        for (int i = 0; i < idCarreras.size(); i++) {
-            Optional<Carrera> oCarrera = carreraDAO.findById(idCarreras.get(i));
-            if(oCarrera.stream().){
-                carreras.add(()oCarrera);
-            }
-        }
-        Optional<Carrera> oCarrera = carreraDAO.findById(idCarrera);
-        if(!oCarrera.isPresent()){
-            throw new BadRequestException(String.format("La carrera con id %d no existe", idCarrera));
-        }
-
-
-        Carrera carrera = oCarrera.get();
-
-        ((Profesor)profesor).setCarrera(carrera);*/
-        Persona profesor = oProfesor.get();
         return service.save(profesor);
     }
 
