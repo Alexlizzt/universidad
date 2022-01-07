@@ -36,23 +36,33 @@ public class PersonaController extends GenericController<Persona, PersonaDAO> {
     }
 
     @GetMapping("/apellido")
-    public List<Persona> buscarPorApellido(@RequestParam String apellido){
+    public ResponseEntity<?> buscarPorApellido(@RequestParam String apellido){
+        Map<String, Object> mensaje = new HashMap<>();
         List<Persona> oPersona = (List<Persona>) service.buscarPersonasPorApellido(apellido);
         if(oPersona.isEmpty()){
-            throw new BadRequestException(String.format("No se encontraron Personas con apellido %s", apellido));
+            //throw new BadRequestException(String.format("No se encontraron Personas con apellido %s", apellido));
+            mensaje.put("success", Boolean.FALSE);
+            mensaje.put("mensaje", String.format("No se encontraron Personas con apellido %s", apellido));
+            return ResponseEntity.badRequest().body(mensaje);
         }
-        return oPersona;
+        mensaje.put("datos", oPersona);
+        mensaje.put("success", Boolean.TRUE);
+        return ResponseEntity.ok(mensaje);
     }
 
     @GetMapping("/dni")
-    public Persona buscarPorDni(@RequestParam String dni){
+    public ResponseEntity<?> buscarPorDni(@RequestParam String dni){
+        Map<String, Object> mensaje = new HashMap<>();
         Optional<Persona> oPersona = service.buscarPorDni(dni);
         if(!oPersona.isPresent()){
-            throw new BadRequestException(String.format("No se encontro Persona con dni %d", dni));
+            //throw new BadRequestException(String.format("No se encontro Persona con dni %d", dni));
+            mensaje.put("success", Boolean.FALSE);
+            mensaje.put("mensaje", String.format("No se encontro Persona con dni %d", dni));
+            return ResponseEntity.badRequest().body(mensaje);
         }
-        return  oPersona.get();
+        mensaje.put("datos", oPersona.get());
+        mensaje.put("success", Boolean.TRUE);
+        return ResponseEntity.ok(mensaje);
     }
-
-
-
+    
 }
