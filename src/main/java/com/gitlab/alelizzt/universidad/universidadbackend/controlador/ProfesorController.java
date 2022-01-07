@@ -1,6 +1,5 @@
 package com.gitlab.alelizzt.universidad.universidadbackend.controlador;
 
-import com.gitlab.alelizzt.universidad.universidadbackend.exception.BadRequestException;
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.Carrera;
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.Profesor;
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.Persona;
@@ -9,11 +8,10 @@ import com.gitlab.alelizzt.universidad.universidadbackend.servicios.contratos.Pe
 import com.gitlab.alelizzt.universidad.universidadbackend.servicios.contratos.ProfesorDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -44,24 +42,37 @@ public class ProfesorController extends PersonaController {
     }**/
 
     @GetMapping("/carrera")
-    public List<Persona> buscarProfesoresPorCarrera(@RequestParam String carrera){
+    public ResponseEntity<?> buscarProfesoresPorCarrera(@RequestParam String carrera){
+        Map<String, Object> mensaje = new HashMap<>();
         List<Persona> profesoresByCarrera = (List<Persona>) profesorDAO.findProfesoresByCarrera(carrera);
         if(profesoresByCarrera.isEmpty()){
-            throw new BadRequestException("No se ha encontrado algun profesor");
+            //throw new BadRequestException("No se ha encontrado algun profesor");
+            mensaje.put("success", Boolean.FALSE);
+            mensaje.put("mensaje", String.format("No se ha encontrado algun profesor en la carrera %s", carrera));
+            return ResponseEntity.badRequest().body(mensaje);
         }
-        return profesoresByCarrera;
+        mensaje.put("datos", profesoresByCarrera);
+        mensaje.put("success", Boolean.TRUE);
+        return ResponseEntity.ok(mensaje);
     }
 
     @PutMapping("{idProfesor}/carrera/{idCarreras}")
-    public Persona asignarCarrerasProfesor(@PathVariable Integer idProfesor, @PathVariable Set<Carrera> idCarreras){
+    public ResponseEntity<?> asignarCarrerasProfesor(@PathVariable Integer idProfesor, @PathVariable Set<Carrera> idCarreras){
+        Map<String, Object> mensaje = new HashMap<>();
         Optional<Persona> oProfesor = service.findById(idProfesor);
         if(!oProfesor.isPresent()){
-            throw new BadRequestException(String.format("El/La profesor/a con id %d no existe", idProfesor));
+            //throw new BadRequestException(String.format("El/La profesor/a con id %d no existe", idProfesor));
+            mensaje.put("success", Boolean.FALSE);
+            mensaje.put("mensaje", String.format("El/La profesor/a con id %d no existe", idProfesor));
+            return ResponseEntity.badRequest().body(mensaje);
         }
         Profesor profesor= (Profesor) oProfesor.get();
         profesor.setCarrera(idCarreras);
 
-        return service.save(profesor);
+        mensaje.put("datos", service.save(profesor));
+        mensaje.put("success", Boolean.TRUE);
+
+        return ResponseEntity.ok(mensaje);
     }
 
 }
