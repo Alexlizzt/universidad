@@ -26,7 +26,7 @@ public class CarreraDtoController extends GenericDtoController<Carrera, CarreraD
     private CarreraMapperMS mapper;
 
     public CarreraDtoController(CarreraDAO service) {
-        super(service, "Carrara");
+        super(service, "Carrera");
     }
 
     @GetMapping
