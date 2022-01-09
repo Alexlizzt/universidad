@@ -16,12 +16,12 @@ public class AulaDTO {
     @NotNull
     private Integer codigo;
     @Positive(message = "El valor no puede ser negativo")
-    private Integer nroAula;
+    private Integer numero_aula;
     @NotEmpty(message = "Debe ingresar medidas en metros cuadrados")
     private String medidas;
     @Positive(message = "El valor no puede ser negativo")
-    private Integer cantidadPupitres;
+    private Integer cantidad_pupitres;
     @NotNull
     @NotEmpty(message = "Debe ingresar un valor")
-    private Pizarron pizarron;
+    private Pizarron tipo_pizarron;
 }

@@ -4,14 +4,21 @@ import com.gitlab.alelizzt.universidad.universidadbackend.exception.BadRequestEx
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.Aula;
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.enumeradores.Pizarron;
 import com.gitlab.alelizzt.universidad.universidadbackend.servicios.contratos.AulaDAO;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated
+@RestController
+@RequestMapping("/aulas")
+@ConditionalOnProperty(prefix = "app", name = "controller.enable-dto", havingValue = "false")
 public class AulaController extends GenericController<Aula, AulaDAO>{
     public AulaController(AulaDAO service) {
         super(service);
