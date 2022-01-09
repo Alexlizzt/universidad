@@ -1,8 +1,9 @@
-package com.gitlab.alelizzt.universidad.universidadbackend.controlador;
+package com.gitlab.alelizzt.universidad.universidadbackend.controlador.dto;
 
-import com.gitlab.alelizzt.universidad.universidadbackend.exception.BadRequestException;
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.Pabellon;
+import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.mapper.mapstruct.PabellonMapperMS;
 import com.gitlab.alelizzt.universidad.universidadbackend.servicios.contratos.PabellonDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,15 +15,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Deprecated
 @RestController
 @RequestMapping("/pabellones")
-@ConditionalOnProperty(prefix = "app", name = "controller.enable-dto", havingValue = "false")
-public class PabellonController extends GenericController<Pabellon, PabellonDAO>{
+@ConditionalOnProperty(prefix = "app", name = "controller.enable-dto", havingValue = "true")
+public class PabellonDtoController extends GenericDtoController<Pabellon, PabellonDAO>{
 
-    public PabellonController(PabellonDAO service) {
-        super(service);
-        nombreEntidad="Pabellon";
+    @Autowired
+    private PabellonMapperMS mapper;
+
+    public PabellonDtoController(PabellonDAO service) {
+        super(service, "Pabellon");
     }
 
     @GetMapping("/localodad")
