@@ -6,6 +6,7 @@ import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.Perso
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.Profesor;
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.dto.PersonaDTO;
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.mapper.mapstruct.AlumnoMapper;
+import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.mapper.mapstruct.EmpleadoMapper;
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.mapper.mapstruct.ProfesorMapper;
 import com.gitlab.alelizzt.universidad.universidadbackend.servicios.contratos.PersonaDAO;
 
@@ -13,6 +14,7 @@ public class PersonaDtoController extends GenericDtoController<Persona, PersonaD
 
     protected AlumnoMapper alumnoMapper;
     protected ProfesorMapper profesorMapper;
+    protected EmpleadoMapper empleadoMapper;
 
     public PersonaDtoController(PersonaDAO service, String nombre_entidad, AlumnoMapper alumnoMapper) {
         super(service, nombre_entidad);
@@ -24,6 +26,11 @@ public class PersonaDtoController extends GenericDtoController<Persona, PersonaD
         this.profesorMapper = profesorMapper;
     }
 
+    public PersonaDtoController(PersonaDAO service, String nombre_entidad, EmpleadoMapper empleadoMapper) {
+        super(service, nombre_entidad);
+        this.empleadoMapper = empleadoMapper;
+    }
+
 
     public PersonaDTO agregarPersona(Persona persona){
         Persona personaEntidad = super.agregarEntidad(persona);
@@ -33,7 +40,7 @@ public class PersonaDtoController extends GenericDtoController<Persona, PersonaD
         } else if (personaEntidad instanceof Profesor){
             dto = profesorMapper.mapProfesor((Profesor) personaEntidad);
         } else if(personaEntidad instanceof Empleado) {
-            //Aplicar Mapper de Empleado
+            dto = empleadoMapper.mapEmpleado((Empleado) personaEntidad);
         }
         return dto;
     }

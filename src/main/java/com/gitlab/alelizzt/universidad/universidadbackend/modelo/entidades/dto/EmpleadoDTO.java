@@ -16,11 +16,11 @@ import java.math.BigDecimal;
 public class EmpleadoDTO extends PersonaDTO{
 
     private BigDecimal sueldo;
-    private TipoEmpleado tipoEmpleado;
+    private TipoEmpleado tipo_empleado;
 
-    public EmpleadoDTO(Integer id, String nombre, String apellido, String dni, Direccion direccion, BigDecimal sueldo, TipoEmpleado tipoEmpleado) {
+    public EmpleadoDTO(Integer id, String nombre, String apellido, String dni, Direccion direccion, BigDecimal sueldo, TipoEmpleado tipo_empleado) {
         super(id, nombre, apellido, dni, direccion);
         this.sueldo = sueldo;
-        this.tipoEmpleado = tipoEmpleado;
+        this.tipo_empleado = tipo_empleado;
     }
 }
