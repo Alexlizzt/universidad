@@ -1,6 +1,5 @@
 package com.gitlab.alelizzt.universidad.universidadbackend.controlador;
 
-import com.gitlab.alelizzt.universidad.universidadbackend.exception.BadRequestException;
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.Persona;
 import com.gitlab.alelizzt.universidad.universidadbackend.servicios.contratos.PersonaDAO;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Deprecated
 public class PersonaController extends GenericController<Persona, PersonaDAO> {
 
     public PersonaController(PersonaDAO service) {
