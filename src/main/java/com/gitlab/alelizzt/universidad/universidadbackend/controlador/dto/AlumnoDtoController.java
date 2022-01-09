@@ -26,7 +26,7 @@ import java.util.Optional;
 public class AlumnoDtoController extends PersonaDtoController{
 
 
-    public AlumnoDtoController(PersonaDAO service, AlumnoMapper alumnoMapper) {
+    public AlumnoDtoController(@Qualifier("alumnoDAOImpl") PersonaDAO service, AlumnoMapper alumnoMapper) {
         super(service, "Alumno", alumnoMapper);
     }
 
