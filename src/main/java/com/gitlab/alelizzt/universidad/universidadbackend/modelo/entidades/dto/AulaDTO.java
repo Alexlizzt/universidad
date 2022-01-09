@@ -14,7 +14,7 @@ import javax.validation.constraints.Positive;
 @AllArgsConstructor
 public class AulaDTO {
     @NotNull
-    private Integer id;
+    private Integer codigo;
     @Positive(message = "El valor no puede ser negativo")
     private Integer nroAula;
     @NotEmpty(message = "Debe ingresar medidas en metros cuadrados")
