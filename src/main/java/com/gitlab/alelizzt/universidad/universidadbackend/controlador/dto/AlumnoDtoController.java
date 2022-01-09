@@ -23,23 +23,22 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/alumnos")
 @ConditionalOnProperty(prefix = "app", name = "controller.enable-dto", havingValue = "true")
-public class AlumnoDtoController {
+public class AlumnoDtoController extends PersonaDtoController{
 
-    @Autowired
-    @Qualifier("alumnoDAOImpl")
-    private PersonaDAO personaDAO;
-    @Autowired
-    private AlumnoMapper mapper;
+
+    public AlumnoDtoController(PersonaDAO service, AlumnoMapper alumnoMapper) {
+        super(service, "Alumno", alumnoMapper);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerAlumnoPorId(@PathVariable Integer id){
 
          Map<String, Object> mensaje = new HashMap<>();
-         Optional<Persona> oPersona = personaDAO.findById(id);
-         PersonaDTO dto = mapper.mapAlumno((Alumno) oPersona.get());
+         //Optional<Persona> oPersona = personaDAO.findById(id);
+         //PersonaDTO dto = mapper.mapAlumno((Alumno) oPersona.get());
 
          mensaje.put("success", Boolean.TRUE);
-         mensaje.put("data", dto);
+         //mensaje.put("data", dto);
 
          return ResponseEntity.ok(mensaje);
     }
@@ -49,17 +48,14 @@ public class AlumnoDtoController {
         Map<String, Object> mensaje = new HashMap<>();
         if(result.hasErrors()){
             mensaje.put("success", Boolean.FALSE);
-            Map<String, Object> validaciones = new HashMap<>();
-            result.getFieldErrors()
-                    .forEach(error -> validaciones.put(error.getField(), error.getDefaultMessage()));
-            mensaje.put("validaciones", validaciones);
+            mensaje.put("validaciones", super.obtenerValidaciones(result));
             return ResponseEntity.badRequest().body(mensaje);
         }
 
-        Persona save = personaDAO.save(mapper.mapAlumno((AlumnoDTO) personaDTO));
+        PersonaDTO save = super.agregarPersona(alumnoMapper.mapAlumno((AlumnoDTO) personaDTO));
 
         mensaje.put("success", Boolean.TRUE);
-        mensaje.put("data", mapper.mapAlumno((Alumno) save));
+        mensaje.put("data", save);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(mensaje);
     }
