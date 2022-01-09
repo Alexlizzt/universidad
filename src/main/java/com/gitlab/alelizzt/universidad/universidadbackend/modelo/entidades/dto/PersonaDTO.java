@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -25,8 +27,11 @@ import javax.validation.constraints.Size;
         @JsonSubTypes.Type(value = ProfesorDTO.class, name = "profesor")
 })
 public abstract class PersonaDTO {
+    @NotNull
     private Integer id;
+    @NotEmpty
     private String nombre;
+    @NotEmpty
     private String apellido;
     @Pattern(regexp = "[0-9]+")
     @Size(min = 1, max = 10)

@@ -1,12 +1,11 @@
-package com.gitlab.alelizzt.universidad.universidadbackend.controlador;
+package com.gitlab.alelizzt.universidad.universidadbackend.controlador.dto;
 
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.Carrera;
-import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.Profesor;
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.Persona;
-import com.gitlab.alelizzt.universidad.universidadbackend.servicios.contratos.CarreraDAO;
+import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.Profesor;
+import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.mapper.mapstruct.AlumnoMapper;
 import com.gitlab.alelizzt.universidad.universidadbackend.servicios.contratos.PersonaDAO;
 import com.gitlab.alelizzt.universidad.universidadbackend.servicios.contratos.ProfesorDAO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
@@ -14,33 +13,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-@Deprecated
 @RestController
 @RequestMapping("/profesores")
-@ConditionalOnProperty(prefix = "app", name = "controller.enable-dto", havingValue = "false")
-public class ProfesorController extends PersonaController {
+@ConditionalOnProperty(prefix = "app", name = "controller.enable-dto", havingValue = "true")
+public class ProfesorDtoController extends PersonaDtoController {
 
-    private final CarreraDAO carreraDAO;
     private final ProfesorDAO profesorDAO;
 
-    @Autowired
-    public ProfesorController(@Qualifier("profesorDAOImpl") PersonaDAO service, CarreraDAO carreraDAO, ProfesorDAO profesorDAO) {
-        super(service);
-        this.carreraDAO = carreraDAO;
+    public ProfesorDtoController(@Qualifier("profesorDAOImpl") PersonaDAO service, AlumnoMapper alumnoMapper, ProfesorDAO profesorDAO) {
+        super(service, "Profesor", alumnoMapper);
         this.profesorDAO = profesorDAO;
-        nombreEntidad = "Profesor";
     }
-
-    /**
-    @GetMapping
-    public List<Persona> obtenerTodos(){
-        Stream<Persona> personas = ((List<Persona>) service.findAll()).stream();
-        List<Persona> profesores = personas.filter(persona -> persona instanceof Profesor).collect(Collectors.toList());
-        if(profesores.isEmpty()){
-            throw new BadRequestException("No se ha encontrado algun profesor");
-        }
-        return profesores;
-    }**/
 
     @GetMapping("/carrera")
     public ResponseEntity<?> buscarProfesoresPorCarrera(@RequestParam String carrera){
@@ -75,5 +58,4 @@ public class ProfesorController extends PersonaController {
 
         return ResponseEntity.ok(mensaje);
     }
-
 }
