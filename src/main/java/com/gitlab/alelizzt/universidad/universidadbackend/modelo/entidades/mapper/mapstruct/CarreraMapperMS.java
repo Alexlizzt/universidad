@@ -11,6 +11,7 @@ public interface CarreraMapperMS {
 
     @Mappings({
             @Mapping(source = "id", target = "codigo"),
+            @Mapping(source = "nombre", target = "nombre"),
             @Mapping(source = "cantidadMaterias", target = "cantidad_materias"),
             @Mapping(source = "cantidadAnios", target = "cantidad_anios")
     })
