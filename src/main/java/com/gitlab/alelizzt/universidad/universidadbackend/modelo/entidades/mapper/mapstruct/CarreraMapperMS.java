@@ -6,6 +6,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface CarreraMapperMS {
 
@@ -16,4 +18,12 @@ public interface CarreraMapperMS {
             @Mapping(source = "cantidadAnios", target = "cantidad_anios")
     })
     CarreraDTO mapCarrera(Carrera carrera);
+    List<CarreraDTO> mapCarreras(List<Carrera> carreras);
+    @Mappings({
+            @Mapping(source = "codigo", target = "id"),
+            @Mapping(source = "nombre", target = "nombre"),
+            @Mapping(source = "cantidad_materias", target = "cantidadMaterias"),
+            @Mapping(source = "cantidad_anios", target = "cantidadAnios")
+    })
+    Carrera mapCarrera(CarreraDTO carreraDTO);
 }
