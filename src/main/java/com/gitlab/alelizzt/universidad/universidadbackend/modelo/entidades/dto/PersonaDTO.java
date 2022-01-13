@@ -29,7 +29,8 @@ import javax.validation.constraints.Size;
 )
 @JsonSubTypes({
         @JsonSubTypes.Type(value = AlumnoDTO.class, name = "alumno"),
-        @JsonSubTypes.Type(value = ProfesorDTO.class, name = "profesor")
+        @JsonSubTypes.Type(value = ProfesorDTO.class, name = "profesor"),
+        @JsonSubTypes.Type(value = EmpleadoDTO.class, name = "empleado")
 })
 public abstract class PersonaDTO {
 
