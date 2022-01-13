@@ -6,6 +6,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface AulaMapperMS {
 
@@ -17,4 +19,13 @@ public interface AulaMapperMS {
             @Mapping(source = "pizarron", target = "tipo_pizarron")
     })
     AulaDTO mapAula(Aula aula);
+    List<AulaDTO> mapAula(List<Aula> aulas);
+    @Mappings({
+            @Mapping(source = "codigo", target = "id"),
+            @Mapping(source = "numero_aula", target = "nroAula"),
+            @Mapping(source = "medidas", target = "medidas"),
+            @Mapping(source = "cantidad_pupitres", target = "cantidadPupitres"),
+            @Mapping(source = "tipo_pizarron", target = "pizarron")
+    })
+    Aula mapAula(AulaDTO aulaDTO);
 }
