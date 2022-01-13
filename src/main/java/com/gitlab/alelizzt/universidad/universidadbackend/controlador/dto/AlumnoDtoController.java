@@ -7,6 +7,7 @@ import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.dto.P
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.mapper.mapstruct.AlumnoMapper;
 import com.gitlab.alelizzt.universidad.universidadbackend.servicios.contratos.PersonaDAO;
 import io.swagger.annotations.*;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -93,7 +94,42 @@ public class AlumnoDtoController extends PersonaDtoController{
          return ResponseEntity.ok(mensaje);
     }
 
+    @PutMapping("/{id}")
+    @ApiOperation(value = "Actualizar los datos del alumno")
+    public ResponseEntity<?> actualizarAlumno(@PathVariable Integer id, @RequestBody @ApiParam(name = "Alumno de la universidad") AlumnoDTO alumnoDTO, BindingResult result) {
+        Map<String, Object> mensaje = new HashMap<>();
+        if(result.hasErrors()){
+            mensaje.put("success", Boolean.FALSE);
+            mensaje.put("validaciones", super.obtenerValidaciones(result));
+            return ResponseEntity.badRequest().body(mensaje);
+        }
+        Alumno alumnoUpdate = null;
+        PersonaDTO personaDTO = super.buscarPersonaPorId(id);
+        if (personaDTO == null){
+            mensaje.put("success", Boolean.FALSE);
+            mensaje.put("mensaje", String.format("No existe %s con ID %d", nombre_entidad, id));
+            return ResponseEntity.badRequest().body(mensaje);
+        }
 
+        Alumno alumno = alumnoMapper.mapAlumno(alumnoDTO);
+
+        alumnoUpdate = alumnoMapper.mapAlumno((AlumnoDTO) personaDTO);
+        alumnoUpdate.setNombre(alumno.getNombre());
+        alumnoUpdate.setApellido(alumno.getApellido());
+        alumnoUpdate.setDni(alumno.getDni());
+        alumnoUpdate.setDireccion(alumno.getDireccion());
+
+        mensaje.put("datos", service.save(alumnoUpdate));
+        mensaje.put("success", Boolean.TRUE);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(mensaje);
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiOperation(value = "Eliminar alumno del sistema")
+    public ResponseEntity<?> borrarAlumno(@PathVariable Integer id){
+        service.deteteById(id);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
 
 
 }
