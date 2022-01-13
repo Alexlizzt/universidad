@@ -10,6 +10,9 @@ import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.mappe
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.mapper.mapstruct.ProfesorMapper;
 import com.gitlab.alelizzt.universidad.universidadbackend.servicios.contratos.PersonaDAO;
 
+import java.util.List;
+import java.util.Optional;
+
 public class PersonaDtoController extends GenericDtoController<Persona, PersonaDAO> {
 
     protected AlumnoMapper alumnoMapper;
@@ -31,6 +34,21 @@ public class PersonaDtoController extends GenericDtoController<Persona, PersonaD
         this.empleadoMapper = empleadoMapper;
     }
 
+    public PersonaDTO obtenerPersonas(){
+        List<Persona> personas = super.obtenerTodos();
+        PersonaDTO dto = null;
+        if(personas.isEmpty()){
+            return null;
+        }
+        if(personas instanceof Alumno) {
+            dto = alumnoMapper.mapAlumno((Alumno) personas);
+        } else if (personas instanceof Profesor){
+            dto = profesorMapper.mapProfesor((Profesor) personas);
+        } else if(personas instanceof Empleado) {
+            dto = empleadoMapper.mapEmpleado((Empleado) personas);
+        }
+        return dto;
+    }
 
     public PersonaDTO agregarPersona(Persona persona){
         Persona personaEntidad = super.agregarEntidad(persona);
@@ -44,4 +62,24 @@ public class PersonaDtoController extends GenericDtoController<Persona, PersonaD
         }
         return dto;
     }
+
+    public PersonaDTO buscarPersonaPorId(Integer id){
+        Optional<Persona> oPersona = service.findById(id);
+        Persona persona = null;
+        PersonaDTO dto = null;
+        if(oPersona.isEmpty()){
+            return null;
+        } else {
+            persona = oPersona.get();
+        }
+        if (persona instanceof Alumno) {
+            dto = alumnoMapper.mapAlumno((Alumno) persona);
+        } else if (persona instanceof Profesor) {
+            dto = profesorMapper.mapProfesor((Profesor) persona);
+        } else if (persona instanceof Empleado) {
+            dto = empleadoMapper.mapEmpleado((Empleado) persona);
+        }
+        return dto;
+    }
+
 }

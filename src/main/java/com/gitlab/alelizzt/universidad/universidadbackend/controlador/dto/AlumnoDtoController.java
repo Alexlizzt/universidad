@@ -6,6 +6,7 @@ import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.dto.A
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.dto.PersonaDTO;
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.mapper.mapstruct.AlumnoMapper;
 import com.gitlab.alelizzt.universidad.universidadbackend.servicios.contratos.PersonaDAO;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -17,12 +18,16 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/alumnos")
 @ConditionalOnProperty(prefix = "app", name = "controller.enable-dto", havingValue = "true")
+@Api(value = "Aplicaciones relacionadas con los alumnos", tags = "Acciones sobre Alumnos")
 public class AlumnoDtoController extends PersonaDtoController{
 
 
@@ -30,21 +35,31 @@ public class AlumnoDtoController extends PersonaDtoController{
         super(service, "Alumno", alumnoMapper);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> obtenerAlumnoPorId(@PathVariable Integer id){
+    @GetMapping
+    @ApiOperation(value = "Consultar todos los alumnos")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Ejecutado satisfactoriamente")
+    })
+    public ResponseEntity<?> obtenerAlumnos(){
+        Map<String, Object> mensaje = new HashMap<>();
+        Stream<Persona> personas = ((List<Persona>) super.obtenerTodos()).stream();
+        List<Persona> alumnos = personas.filter(persona -> persona instanceof Alumno).collect(Collectors.toList());
 
-         Map<String, Object> mensaje = new HashMap<>();
-         //Optional<Persona> oPersona = personaDAO.findById(id);
-         //PersonaDTO dto = mapper.mapAlumno((Alumno) oPersona.get());
+        if (alumnos.isEmpty()){
+            mensaje.put("success", Boolean.FALSE);
+            mensaje.put("mensaje", String.format("No se encontrarn los %ss cargadas", nombre_entidad));
+            return ResponseEntity.badRequest().body(mensaje);
+        }
+        List<AlumnoDTO> alumnoDTOS = alumnoMapper.mapAlumno(alumnos);
 
-         mensaje.put("success", Boolean.TRUE);
-         //mensaje.put("data", dto);
-
-         return ResponseEntity.ok(mensaje);
+        mensaje.put("success", Boolean.TRUE);
+        mensaje.put("data", alumnoDTOS);
+        return ResponseEntity.ok(mensaje);
     }
 
     @PostMapping
-    public ResponseEntity<?> agregarAlumno(@Valid @RequestBody PersonaDTO personaDTO, BindingResult result){
+    @ApiOperation(value = "Agregar alumno")
+    public ResponseEntity<?> agregarAlumno(@Valid @RequestBody @ApiParam(name = "Alumno de la universidad") PersonaDTO personaDTO, BindingResult result){
         Map<String, Object> mensaje = new HashMap<>();
         if(result.hasErrors()){
             mensaje.put("success", Boolean.FALSE);
@@ -59,6 +74,26 @@ public class AlumnoDtoController extends PersonaDtoController{
 
         return ResponseEntity.status(HttpStatus.CREATED).body(mensaje);
     }
+
+    @GetMapping("/{id}")
+    @ApiOperation(value = "Consultar Alumno por codigo")
+    public ResponseEntity<?> obtenerAlumnoPorId(@PathVariable @ApiParam(name = "Codigo del sistema") Integer id){
+         Map<String, Object> mensaje = new HashMap<>();
+         PersonaDTO dto = super.buscarPersonaPorId(id);
+
+         if (dto == null){
+             mensaje.put("success", Boolean.FALSE);
+             mensaje.put("mensaje", String.format("No existe %s con ID %d", nombre_entidad, id));
+             return ResponseEntity.badRequest().body(mensaje);
+         }
+
+         mensaje.put("success", Boolean.TRUE);
+         mensaje.put("data", alumnoMapper.mapAlumno((AlumnoDTO) dto));
+
+         return ResponseEntity.ok(mensaje);
+    }
+
+
 
 
 }
