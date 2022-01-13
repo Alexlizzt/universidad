@@ -4,32 +4,24 @@
     <property name="LOGS" value="./logs"/>
 
     <appender name="consola" class="ch.qos.logback.core.ConsoleAppender">
-        <!-- On Windows machines setting withJansi to true enables ANSI
-         color code interpretation by the Jansi library. This requires
-         org.fusesource.jansi:jansi:1.8 on the class path.  Note that
-         Unix-based operating systems such as Linux and Mac OS X
-         support ANSI color codes by default. -->
-        <withJansi>true</withJansi>
         <encoder>
             <pattern> %d{dd-MMM-yyyy | HH:mm:ss} %green([%thread]) %highlight(%-5level) %cyan(%logger) %boldRed(-----) %msg%n</pattern>
         </encoder>
     </appender>
 
-    <appender name="RollingFile"
-              class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOGS}/universidad-log.log</file>
-        <encoder
-                class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>%d %p %C{1.} {%t} %m%n</pattern>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- rollover daily -->
+            <fileNamePattern>${LOGS}/archived/universidad-log-%d{yyyy-MM-dd}.%i.txt</fileNamePattern>
+            <!-- each file should be at most 100MB, keep 60 days worth of history, but at most 1GB -->
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%msg%n</pattern>
         </encoder>
-
-        <RollingPolicy
-                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOGS}/archived/universidad-log-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>6KB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-        </RollingPolicy>
     </appender>
 
     <root level="info">
