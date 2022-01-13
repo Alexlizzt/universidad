@@ -36,7 +36,7 @@ public class AulaDtoController extends GenericDtoController<Aula, AulaDAO> {
     @ApiResponses({
             @ApiResponse(code = 200, message = "Ejecutado satisfactoriamente")
     })
-    public ResponseEntity<?> obtenerCarreras(){
+    public ResponseEntity<?> obtenerAulas(){
         Map<String, Object> mensaje = new HashMap<>();
         List<Aula> aulas = (List<Aula>) service.findAll();
 
