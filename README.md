@@ -23,6 +23,11 @@ Si requiere compilar y ejecutar el proyecto
 maven package
 java -jar target/universidad-backend-0.0.1-SNAPSHOT.jar
 ```
+
+## Documentación del API
+
+Una vez ejecutado el proyecto, revisar: [http://localhost:9081/api/v2/universidad/swagger-ui](http://localhost:9081/api/v2/universidad/swagger-ui)
+
 ---
 ## Especificaciones técnicas
 - Spring boot 2.5.6
@@ -38,6 +43,7 @@ java -jar target/universidad-backend-0.0.1-SNAPSHOT.jar
 
 - [ ] Integrar SonarQube para evaluar el código fuente.
 - [ ] Refactorización del código.
+- [ ] Integración con JasperReports.
 - [ ] Agregar FrontEnd para consumir el servicio.
 - [ ] Pruebas unitarias del FrontEnd.
 
