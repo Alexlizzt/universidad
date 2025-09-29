@@ -1,38 +1,37 @@
 package com.gitlab.alelizzt.universidad.universidadbackend.configuration;
 
+import io.swagger.v3.oas.models.ExternalDocumentation;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
 
 import java.util.Collections;
 
 @Configuration
-public class SpringFoxSwagger {
+public class OpenAPIConfig {
 
     @Bean
-    public Docket getDocket(){
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("com.gitlab.alelizzt.universidad.universidadbackend.controlador.dto"))
-                .paths(PathSelectors.any())
-                .build()
-                .apiInfo(apiInfo());
+    public OpenAPI getDocket(){
+        return new OpenAPI()
+                .info(new Info()
+                    .title("Universidad Backend API")
+                    .version("v2")
+                    .description("Api para la administracion de universidad")
+                    .contact(new Contact()
+                            .name("Soporte Técnico")
+                            .url("https://example.com/soporte")
+                            .email("soporte@example.com"))
+                    .license(new License()
+                            .name("Licencia MIT")
+                            .url("https://opensource.org/licenses/MIT"))
+                )
+                .externalDocs(new ExternalDocumentation()
+                        .description("Documentación completa del proyecto")
+                        .url("https://github.com/alexlizzt/universidad"));
     }
 
-    private ApiInfo apiInfo(){
-        return new ApiInfo(
-                "Universidad Backend API",
-                "API para el manejo de nuestra universidad",
-                "V2",
-                "Terminos del servicio",
-                new Contact("Alejandro Lizzt", "https://github.com/Alelizzt","fakemail@gmail.com"),
-                "Licencia de API", "url de licencia", Collections.emptyList()
-        );
-    }
 }
