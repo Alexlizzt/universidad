@@ -1,23 +1,23 @@
 package com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.dto;
 
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.Direccion;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@ApiModel(description = "Profesor de la universidad", value = "Profesor", reference = "Profesor")
+@Schema(
+        description = "Profesor de la universidad"
+)
 public class ProfesorDTO extends PersonaDTO{
 
-    @ApiModelProperty(name = "Sueldo del profesor" , example = "5000.00")
-    @NotEmpty
+    @Schema(description = "Sueldo del profesor" , example = "5000.00")
+    @NotNull
     private BigDecimal sueldo;
 
     public ProfesorDTO(Integer id, String nombre, String apellido, String dni, Direccion direccion, BigDecimal sueldo) {

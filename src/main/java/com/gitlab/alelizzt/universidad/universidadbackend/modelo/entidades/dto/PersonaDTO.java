@@ -2,21 +2,14 @@ package com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.dto;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.Alumno;
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.Direccion;
-import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.Profesor;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 @Data
 @NoArgsConstructor
@@ -32,19 +25,29 @@ import javax.validation.constraints.Size;
         @JsonSubTypes.Type(value = ProfesorDTO.class, name = "profesor"),
         @JsonSubTypes.Type(value = EmpleadoDTO.class, name = "empleado")
 })
+@Schema(
+        description = "Persona base de la que heredan Alumno, Profesor y Empleado",
+        discriminatorProperty = "tipo",
+        oneOf = {AlumnoDTO.class, ProfesorDTO.class, EmpleadoDTO.class}
+)
 public abstract class PersonaDTO {
 
-    @ApiModelProperty(name = "Codigo del sistema", example = "7")
+    @Schema(description = "Código del sistema", example = "7")
     private Integer id;
+
     @NotEmpty
-    @ApiModelProperty(name = "Nombre de la persona", example = "Natalia")
+    @Schema(description = "Nombre de la persona", example = "Natalia")
     private String nombre;
+
     @NotEmpty
-    @ApiModelProperty(name = "Apellido de la persona", example = "Lafourcade Silva")
+    @Schema(description = "Apellido de la persona", example = "Lafourcade Silva")
     private String apellido;
+
     @Pattern(regexp = "[0-9]+")
     @Size(min = 1, max = 10)
-    @ApiModelProperty(name = "Identificacion de la persona", example = "1044878239")
+    @Schema(description = "Documento nacional de identidad", example = "1044878239")
     private String dni;
+
+    @Schema(description = "Dirección de la persona")
     private Direccion direccion;
 }

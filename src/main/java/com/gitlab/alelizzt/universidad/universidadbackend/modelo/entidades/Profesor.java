@@ -1,6 +1,6 @@
 package com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Set;
 

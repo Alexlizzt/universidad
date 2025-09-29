@@ -1,35 +1,45 @@
 package com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.dto;
 
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.enumeradores.Pizarron;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(description = "Aulas de la universidad", value = "Aula", reference = "Aula")
+@Schema(
+        name = "AulaDTO",
+        description = "Aulas de la universidad"
+)
 public class AulaDTO {
-    @ApiModelProperty(name = "Codigo del sistema", example = "10")
+
+    @Schema(description = "Codigo del sistema", example = "10")
     private Integer codigo;
+
     @NotNull
     @Positive(message = "El valor no puede ser negativo")
-    @ApiModelProperty(name = "Numeracion asignada al Aula en la universidad", example = "101", required = true)
+    @Schema(description = "Numeracion asignada al Aula en la universidad", example = "101")
     private Integer numero_aula;
-    @NotEmpty(message = "Debe ingresar medidas en metros cuadrados")
-    @ApiModelProperty(name = "Medidas del Aula", example = "20mts", required = true)
+
+    @NotBlank(message = "Debe ingresar medidas en metros cuadrados")
+    @Schema(description = "Medidas del Aula", example = "20mts")
     private String medidas;
+
+    @NotNull
     @Positive(message = "El valor no puede ser negativo")
-    @ApiModelProperty(name = "Cantidad de pupitres en el aula", example = "40", required = true)
+    @Schema(description = "Cantidad de pupitres en el aula", example = "40")
     private Integer cantidad_pupitres;
-    //TODO: DDocumentar valores Enum en Swagger
-    //@NotEmpty(message = "Debe ingresar un valor")
-    @ApiModelProperty(name = "Tipo de pizarron que se encuentra en el aula", example = "PIZARRA_BLANCA")
+
+    @NotNull(message = "Debe especificar el tipo de pizarrón")
+    @Schema(
+            description = "Tipo de pizarrón en el aula",
+            example = "PIZARRA_BLANCA",
+            allowableValues = {"PIZARRA_BLANCA", "PIZARRA_TIZA"}
+    )
     private Pizarron tipo_pizarron;
 }

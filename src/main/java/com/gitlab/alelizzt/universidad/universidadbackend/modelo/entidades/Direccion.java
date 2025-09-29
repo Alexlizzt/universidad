@@ -1,6 +1,6 @@
 package com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 import java.io.Serializable;
 
 @Embeddable
