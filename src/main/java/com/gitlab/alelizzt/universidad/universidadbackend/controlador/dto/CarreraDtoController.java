@@ -5,7 +5,10 @@ import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.dto.C
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.mapper.CarreraMapper;
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.mapper.mapstruct.CarreraMapperMS;
 import com.gitlab.alelizzt.universidad.universidadbackend.servicios.contratos.CarreraDAO;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
@@ -13,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +26,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/carreras")
 @ConditionalOnProperty(prefix = "app", name = "controller.enable-dto", havingValue = "true")
-@Api(value = "Aplicaciones relacionadas con las carreras", tags = "Acciones sobre Carreras")
+@Tag(name = "Carreras", description = "Aplicaciones relacionadas con las carreras")
 public class CarreraDtoController extends GenericDtoController<Carrera, CarreraDAO>{
 
     @Autowired
@@ -34,10 +37,8 @@ public class CarreraDtoController extends GenericDtoController<Carrera, CarreraD
     }
 
     @GetMapping
-    @ApiOperation(value = "Consultar todas las carreras")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Ejecutado satisfactoriamente")
-    })
+    @Operation(summary = "Consultar todas las carreras")
+    @ApiResponse(responseCode = "200", description = "Ejecutado satisfactoriamente")
     public ResponseEntity<?> obtenerCarreras(){
         Map<String, Object> mensaje = new HashMap<>();
         List<Carrera> carreras = (List<Carrera>) service.findAll();
@@ -60,8 +61,10 @@ public class CarreraDtoController extends GenericDtoController<Carrera, CarreraD
     }
 
     @PostMapping
-    @ApiOperation(value = "Agregar Carrera")
-    public ResponseEntity<?> agregarCarrera(@Valid @RequestBody @ApiParam(name = "Carrera de la universidad") CarreraDTO carreraDTO, BindingResult result){
+    @Operation(summary = "Agregar Carrera")
+    public ResponseEntity<?> agregarCarrera(
+            @Valid @RequestBody
+            @Parameter(description = "Carrera de la universidad") CarreraDTO carreraDTO, BindingResult result){
         Map<String, Object> mensaje = new HashMap<>();
         if(result.hasErrors()){
             mensaje.put("success", Boolean.FALSE);
@@ -74,8 +77,8 @@ public class CarreraDtoController extends GenericDtoController<Carrera, CarreraD
     }
 
     @GetMapping("/{id}")
-    @ApiOperation(value = "Consultar Carrera por codigo")
-    public ResponseEntity<?> obtenerCarreraPorId(@PathVariable @ApiParam(name = "Codigo del sistema") Integer id){
+    @Operation(summary = "Consultar Carrera por codigo")
+    public ResponseEntity<?> obtenerCarreraPorId(@PathVariable @Parameter(name = "Codigo del sistema") Integer id){
         Map<String, Object> mensaje = new HashMap<>();
         Optional<Carrera> oCarrera = service.findById(id);
         if(!oCarrera.isPresent()){
@@ -90,7 +93,7 @@ public class CarreraDtoController extends GenericDtoController<Carrera, CarreraD
     }
 
     @PutMapping("/{id}")
-    @ApiOperation(value = "Actualizar los datos de la Carrera")
+    @Operation(summary = "Actualizar los datos de la Carrera")
     public ResponseEntity<?> actualizarCarrera(@PathVariable Integer id, @RequestBody CarreraDTO carreraDTO){
         Map<String, Object> mensaje = new HashMap<>();
         Carrera carreraUpdate = null;
@@ -113,7 +116,7 @@ public class CarreraDtoController extends GenericDtoController<Carrera, CarreraD
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation(value = "Eliminar la carrera del sistema")
+    @Operation(summary = "Eliminar la carrera del sistema")
     public ResponseEntity<?> borrarCarrera(@PathVariable Integer id){
         service.deteteById(id);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();

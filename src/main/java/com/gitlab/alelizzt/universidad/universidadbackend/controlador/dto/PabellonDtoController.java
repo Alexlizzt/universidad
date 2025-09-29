@@ -4,7 +4,10 @@ import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.Pabel
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.dto.PabellonDTO;
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.mapper.mapstruct.PabellonMapperMS;
 import com.gitlab.alelizzt.universidad.universidadbackend.servicios.contratos.PabellonDAO;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
@@ -12,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +24,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/pabellones")
 @ConditionalOnProperty(prefix = "app", name = "controller.enable-dto", havingValue = "true")
-@Api(value = "Aplicaciones relacionadas con los pabellones", tags = "Acciones sobre Pabellones")
+@Tag(name = "Pabellones", description = "Aplicaciones relacionadas con los pabellones")
 public class PabellonDtoController extends GenericDtoController<Pabellon, PabellonDAO>{
 
     @Autowired
@@ -32,10 +35,8 @@ public class PabellonDtoController extends GenericDtoController<Pabellon, Pabell
     }
 
     @GetMapping
-    @ApiOperation(value = "Consultar todos los pabellones")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Ejecutado satisfactoriamente")
-    })
+    @Operation(summary = "Consultar todos los pabellones")
+    @ApiResponse(responseCode = "200", description = "Ejecutado satisfactoriamente")
     public ResponseEntity<?> obtenerPabellones(){
         Map<String, Object> mensaje = new HashMap<>();
         List<Pabellon> pabellones = (List<Pabellon>) service.findAll();
@@ -53,8 +54,8 @@ public class PabellonDtoController extends GenericDtoController<Pabellon, Pabell
     }
 
     @PostMapping
-    @ApiOperation(value = "Agregar Pabellon")
-    public ResponseEntity<?> agregarPabellon(@Valid @RequestBody @ApiParam(name = "Pabellon de la universidad") PabellonDTO pabellonDTO, BindingResult result){
+    @Operation(summary = "Agregar Pabellon")
+    public ResponseEntity<?> agregarPabellon(@Valid @RequestBody @Parameter(description = "Pabellon de la universidad") PabellonDTO pabellonDTO, BindingResult result){
         Map<String, Object> mensaje = new HashMap<>();
         if(result.hasErrors()){
             mensaje.put("success", Boolean.FALSE);
@@ -67,8 +68,8 @@ public class PabellonDtoController extends GenericDtoController<Pabellon, Pabell
     }
 
     @GetMapping("/{id}")
-    @ApiOperation(value = "Consultar Pabellon por codigo")
-    public ResponseEntity<?> obtenerPabellonPorId(@PathVariable @ApiParam(name = "Codigo del Pabellon") Integer id){
+    @Operation(summary = "Consultar Pabellon por codigo")
+    public ResponseEntity<?> obtenerPabellonPorId(@PathVariable @Parameter(description = "Codigo del Pabellon") Integer id){
         Map<String, Object> mensaje = new HashMap<>();
         Optional<Pabellon> oPabellon = service.findById(id);
         if(!oPabellon.isPresent()){
@@ -83,7 +84,7 @@ public class PabellonDtoController extends GenericDtoController<Pabellon, Pabell
     }
 
     @PutMapping("/{id}")
-    @ApiOperation(value = "Actualizar los datos del Pabellon")
+    @Operation(summary = "Actualizar los datos del Pabellon")
     public ResponseEntity<?> actualizarPabellon(@PathVariable Integer id, @RequestBody PabellonDTO pabellonDTO) {
         Map<String, Object> mensaje = new HashMap<>();
         Pabellon pabellonUpdate = null;
@@ -106,13 +107,14 @@ public class PabellonDtoController extends GenericDtoController<Pabellon, Pabell
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation(value = "Eliminar el Pabellon del sistema")
+    @Operation(summary = "Eliminar el Pabellon del sistema")
     public ResponseEntity<?> borrarPabellon(@PathVariable Integer id){
         service.deteteById(id);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     @GetMapping("/localidad")
+    @Operation(summary = "Consultar pabellon por localidad")
     public ResponseEntity<?> buscarPabellonesPorLocalidad(@RequestParam String localidad){
         Map<String, Object> mensaje = new HashMap<>();
         List<Pabellon> pabellones = (List<Pabellon>) service.buscarPabellonPorLocalidad(localidad);
@@ -128,6 +130,7 @@ public class PabellonDtoController extends GenericDtoController<Pabellon, Pabell
     }
 
     @GetMapping("/nombre")
+    @Operation(summary = "Consultar pabellon por nombre")
     public ResponseEntity<?> buscarPabellonPorNombre(@RequestParam String nombre){
         Map<String, Object> mensaje = new HashMap<>();
         List<Pabellon> pabellones = (List<Pabellon>) service.buscarPabellonPorNombre(nombre);

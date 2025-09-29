@@ -9,7 +9,10 @@ import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.mappe
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.mapper.mapstruct.ProfesorMapper;
 import com.gitlab.alelizzt.universidad.universidadbackend.servicios.contratos.PersonaDAO;
 import com.gitlab.alelizzt.universidad.universidadbackend.servicios.contratos.ProfesorDAO;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
@@ -17,7 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -25,19 +28,16 @@ import java.util.stream.Stream;
 @RestController
 @RequestMapping("/profesores")
 @ConditionalOnProperty(prefix = "app", name = "controller.enable-dto", havingValue = "true")
-@Api(value = "Aplicaciones relacionadas con los profesores", tags = "Acciones sobre Profesores")
+@Tag(name = "Profesores", description = "Aplicaciones relacionadas con los profesores")
 public class ProfesorDtoController extends PersonaDtoController {
-
 
     public ProfesorDtoController(@Qualifier("profesorDAOImpl") PersonaDAO service, ProfesorMapper profesorMapper) {
         super(service, "Profesor", profesorMapper);
     }
 
     @GetMapping
-    @ApiOperation(value = "Consultar todos los profesores")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Ejecutado satisfactoriamente")
-    })
+    @Operation(summary = "Consultar todos los profesores")
+    @ApiResponse(responseCode = "200", description = "Ejecutado satisfactoriamente")
     public ResponseEntity<?> obtenerProfesores(){
         Map<String, Object> mensaje = new HashMap<>();
         Stream<Persona> personas = ((List<Persona>) super.obtenerTodos()).stream();
@@ -56,8 +56,8 @@ public class ProfesorDtoController extends PersonaDtoController {
     }
 
     @PostMapping
-    @ApiOperation(value = "Agregar profesor")
-    public ResponseEntity<?> agregarProfesor(@Valid @RequestBody @ApiParam(name = "Profesor de la universidad")PersonaDTO personaDTO, BindingResult result) {
+    @Operation(summary = "Agregar profesor")
+    public ResponseEntity<?> agregarProfesor(@Valid @RequestBody @Parameter(description = "Profesor de la universidad")PersonaDTO personaDTO, BindingResult result) {
         Map<String, Object> mensaje = new HashMap<>();
         if(result.hasErrors()){
             mensaje.put("success", Boolean.FALSE);
@@ -73,8 +73,8 @@ public class ProfesorDtoController extends PersonaDtoController {
     }
 
     @GetMapping("/{id}")
-    @ApiOperation(value = "Consultar profesor por codigo")
-    public ResponseEntity<?> obtenerProfesorPorId(@PathVariable @ApiParam(name = "Codigo del sistema") Integer id) {
+    @Operation(summary = "Consultar profesor por codigo")
+    public ResponseEntity<?> obtenerProfesorPorId(@PathVariable @Parameter(name = "Codigo del sistema") Integer id) {
         Map<String, Object> mensaje = new HashMap<>();
         PersonaDTO dto = super.buscarPersonaPorId(id);
 
@@ -91,8 +91,8 @@ public class ProfesorDtoController extends PersonaDtoController {
     }
 
     @PutMapping("/{id}")
-    @ApiOperation(value = "Actualizar los datos del profesor")
-    public ResponseEntity<?> actualizarProfesor(@PathVariable Integer id, @RequestBody @ApiParam(name = "Profesor de la universidad") ProfesorDTO profesorDTO, BindingResult result) {
+    @Operation(summary = "Actualizar los datos del profesor")
+    public ResponseEntity<?> actualizarProfesor(@PathVariable Integer id, @RequestBody @Parameter(description = "Profesor de la universidad") ProfesorDTO profesorDTO, BindingResult result) {
         Map<String, Object> mensaje = new HashMap<>();
         Profesor profesorUpdate = null;
         PersonaDTO personaDTO = super.buscarPersonaPorId(id);
@@ -117,15 +117,15 @@ public class ProfesorDtoController extends PersonaDtoController {
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation(value = "Eliminar profesor del sistema")
+    @Operation(summary = "Eliminar profesor del sistema")
     public ResponseEntity<?> borrarProfesor(@PathVariable Integer id){
         service.deteteById(id);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     @GetMapping("/carrera")
-    @ApiOperation(value = "Buscar Profesores en base a la carrera")
-    public ResponseEntity<?> buscarProfesoresPorCarrera(@RequestParam @ApiParam(name = "Carrera de la universidad")String carrera){
+    @Operation(summary = "Buscar Profesores en base a la carrera")
+    public ResponseEntity<?> buscarProfesoresPorCarrera(@RequestParam @Parameter(description = "Carrera de la universidad")String carrera){
         Map<String, Object> mensaje = new HashMap<>();
         List<Persona> profesoresByCarrera = (List<Persona>)((ProfesorDAO)service).findProfesoresByCarrera(carrera);
         if(profesoresByCarrera.isEmpty()){
@@ -141,7 +141,7 @@ public class ProfesorDtoController extends PersonaDtoController {
 
     // TODO: Verificar funcionamiento
     @PutMapping("{idProfesor}/carrera/{idCarreras}")
-    @ApiOperation(value = "Asignar Carreras al profesor")
+    @Operation(summary = "Asignar Carreras al profesor")
     public ResponseEntity<?> asignarCarrerasProfesor(@PathVariable Integer idProfesor, @RequestBody Set<Carrera> idCarreras){
         Map<String, Object> mensaje = new HashMap<>();
         Optional<Persona> oProfesor = service.findById(idProfesor);

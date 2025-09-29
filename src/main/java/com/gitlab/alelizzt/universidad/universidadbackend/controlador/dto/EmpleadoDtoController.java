@@ -7,7 +7,10 @@ import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.dto.P
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.dto.ProfesorDTO;
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.mapper.mapstruct.EmpleadoMapper;
 import com.gitlab.alelizzt.universidad.universidadbackend.servicios.contratos.PersonaDAO;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
@@ -15,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +28,7 @@ import java.util.stream.Stream;
 @RestController
 @RequestMapping("/empleados")
 @ConditionalOnProperty(prefix = "app", name = "controller.enable-dto", havingValue = "true")
-@Api(value = "Aplicaciones relacionadas con los empleados", tags = "Acciones sobre Empleados")
+@Tag(name = "Empleados", description = "Aplicaciones relacionadas con los empleados")
 public class EmpleadoDtoController extends PersonaDtoController{
 
     public EmpleadoDtoController(@Qualifier("empleadoDAOImpl") PersonaDAO service, EmpleadoMapper empleadoMapper) {
@@ -33,10 +36,8 @@ public class EmpleadoDtoController extends PersonaDtoController{
     }
 
     @GetMapping
-    @ApiOperation(value = "Consultar todos los empleados")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Ejecutado satisfactoriamente")
-    })
+    @Operation(summary = "Consultar todos los empleados")
+    @ApiResponse(responseCode = "200", description = "Ejecutado satisfactoriamente")
     public ResponseEntity<?> obtenerEmpleados() {
         Map<String, Object> mensaje = new HashMap<>();
         Stream<Persona> personas = ((List<Persona>) super.obtenerTodos()).stream();
@@ -55,8 +56,8 @@ public class EmpleadoDtoController extends PersonaDtoController{
     }
 
     @PostMapping
-    @ApiOperation(value = "Agregar empleado")
-    public ResponseEntity<?> agregarEmpleado(@RequestBody @ApiParam(name = "Empleado de la universidad") PersonaDTO personaDTO, BindingResult result) {
+    @Operation(summary = "Agregar empleado")
+    public ResponseEntity<?> agregarEmpleado(@RequestBody @Parameter(description = "Empleado de la universidad") PersonaDTO personaDTO, BindingResult result) {
         Map<String, Object> mensaje = new HashMap<>();
         if(result.hasErrors()){
             mensaje.put("success", Boolean.FALSE);
@@ -72,8 +73,8 @@ public class EmpleadoDtoController extends PersonaDtoController{
     }
 
     @GetMapping("/{id}")
-    @ApiOperation(value = "Consultar empleado por codigo")
-    public ResponseEntity<?> obtenerEmpleadoPorId(@PathVariable @ApiParam(name = "Codigo del sistema") Integer id) {
+    @Operation(summary = "Consultar empleado por codigo")
+    public ResponseEntity<?> obtenerEmpleadoPorId(@PathVariable @Parameter(name = "Codigo del sistema") Integer id) {
         Map<String, Object> mensaje = new HashMap<>();
         PersonaDTO dto = super.buscarPersonaPorId(id);
 
@@ -90,8 +91,8 @@ public class EmpleadoDtoController extends PersonaDtoController{
     }
 
     @PutMapping("/{id}")
-    @ApiOperation(value = "Actualizar los datos del empleado")
-    public ResponseEntity<?> actualizarProfesor(@PathVariable Integer id, @RequestBody @ApiParam(name = "Empleado de la universidad") EmpleadoDTO empleadoDTO, BindingResult result){
+    @Operation(summary = "Actualizar los datos del empleado")
+    public ResponseEntity<?> actualizarProfesor(@PathVariable Integer id, @RequestBody @Parameter(description = "Empleado de la universidad") EmpleadoDTO empleadoDTO, BindingResult result){
         Map<String, Object> mensaje = new HashMap<>();
         Empleado empleadoUpdate = null;
         PersonaDTO personaDTO = super.buscarPersonaPorId(id);
@@ -117,7 +118,7 @@ public class EmpleadoDtoController extends PersonaDtoController{
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation(value = "Eliminar empleado del sistema")
+    @Operation(description = "Eliminar empleado del sistema")
     public ResponseEntity<?> borrarProfesor(@PathVariable Integer id){
         service.deteteById(id);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();

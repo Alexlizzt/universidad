@@ -6,51 +6,52 @@ import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.dto.A
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.dto.PersonaDTO;
 import com.gitlab.alelizzt.universidad.universidadbackend.modelo.entidades.mapper.mapstruct.AlumnoMapper;
 import com.gitlab.alelizzt.universidad.universidadbackend.servicios.contratos.PersonaDAO;
-import io.swagger.annotations.*;
-import io.swagger.models.auth.In;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/alumnos")
 @ConditionalOnProperty(prefix = "app", name = "controller.enable-dto", havingValue = "true")
-@Api(value = "Aplicaciones relacionadas con los alumnos", tags = "Acciones sobre Alumnos")
-public class AlumnoDtoController extends PersonaDtoController{
-
+@Tag(name = "Alumnos", description = "Operaciones relacionadas con los alumnos")
+public class AlumnoDtoController extends PersonaDtoController {
 
     public AlumnoDtoController(@Qualifier("alumnoDAOImpl") PersonaDAO service, AlumnoMapper alumnoMapper) {
         super(service, "Alumno", alumnoMapper);
     }
 
     @GetMapping
-    @ApiOperation(value = "Consultar todos los alumnos")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Ejecutado satisfactoriamente")
-    })
-    public ResponseEntity<?> obtenerAlumnos(){
+    @Operation(summary = "Consultar todos los alumnos", description = "Devuelve todos los alumnos registrados")
+    @ApiResponse(responseCode = "200", description = "Consulta exitosa")
+    public ResponseEntity<?> obtenerAlumnos() {
         Map<String, Object> mensaje = new HashMap<>();
         Stream<Persona> personas = ((List<Persona>) super.obtenerTodos()).stream();
-        List<Persona> alumnos = personas.filter(persona -> persona instanceof Alumno).collect(Collectors.toList());
+        List<Persona> alumnos = personas
+                .filter(persona -> persona instanceof Alumno)
+                .collect(Collectors.toList());
 
-        if (alumnos.isEmpty()){
+        if (alumnos.isEmpty()) {
             mensaje.put("success", Boolean.FALSE);
-            mensaje.put("mensaje", String.format("No se encontrarn los %ss cargadas", nombre_entidad));
+            mensaje.put("mensaje", String.format("No se encontraron los %ss cargados", nombre_entidad));
             return ResponseEntity.badRequest().body(mensaje);
         }
+
         List<AlumnoDTO> alumnoDTOS = alumnoMapper.mapAlumno(alumnos);
 
         mensaje.put("success", Boolean.TRUE);
@@ -59,61 +60,85 @@ public class AlumnoDtoController extends PersonaDtoController{
     }
 
     @PostMapping
-    @ApiOperation(value = "Agregar alumno")
-    public ResponseEntity<?> agregarAlumno(@Valid @RequestBody @ApiParam(name = "Alumno de la universidad") PersonaDTO personaDTO, BindingResult result){
+    @Operation(summary = "Agregar un nuevo alumno")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Alumno creado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
+    })
+    public ResponseEntity<?> agregarAlumno(
+            @Valid @RequestBody
+            @Parameter(description = "Alumno a registrar") PersonaDTO personaDTO,
+            BindingResult result) {
+
         Map<String, Object> mensaje = new HashMap<>();
-        if(result.hasErrors()){
+
+        if (result.hasErrors()) {
             mensaje.put("success", Boolean.FALSE);
             mensaje.put("validaciones", super.obtenerValidaciones(result));
             return ResponseEntity.badRequest().body(mensaje);
         }
 
         PersonaDTO save = super.agregarPersona(alumnoMapper.mapAlumno((AlumnoDTO) personaDTO));
-
         mensaje.put("success", Boolean.TRUE);
         mensaje.put("data", save);
-
         return ResponseEntity.status(HttpStatus.CREATED).body(mensaje);
     }
 
     @GetMapping("/{id}")
-    @ApiOperation(value = "Consultar Alumno por codigo")
-    public ResponseEntity<?> obtenerAlumnoPorId(@PathVariable @ApiParam(name = "Codigo del sistema") Integer id){
-         Map<String, Object> mensaje = new HashMap<>();
-         PersonaDTO dto = super.buscarPersonaPorId(id);
+    @Operation(summary = "Consultar un alumno por ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Alumno encontrado"),
+            @ApiResponse(responseCode = "400", description = "Alumno no encontrado", content = @Content)
+    })
+    public ResponseEntity<?> obtenerAlumnoPorId(
+            @PathVariable
+            @Parameter(description = "ID del alumno a consultar") Integer id) {
 
-         if (dto == null){
-             mensaje.put("success", Boolean.FALSE);
-             mensaje.put("mensaje", String.format("No existe %s con ID %d", nombre_entidad, id));
-             return ResponseEntity.badRequest().body(mensaje);
-         }
+        Map<String, Object> mensaje = new HashMap<>();
+        PersonaDTO dto = super.buscarPersonaPorId(id);
 
-         mensaje.put("success", Boolean.TRUE);
-         mensaje.put("data", alumnoMapper.mapAlumno((AlumnoDTO) dto));
+        if (dto == null) {
+            mensaje.put("success", Boolean.FALSE);
+            mensaje.put("mensaje", String.format("No existe %s con ID %d", nombre_entidad, id));
+            return ResponseEntity.badRequest().body(mensaje);
+        }
 
-         return ResponseEntity.ok(mensaje);
+        mensaje.put("success", Boolean.TRUE);
+        mensaje.put("data", alumnoMapper.mapAlumno((AlumnoDTO) dto));
+        return ResponseEntity.ok(mensaje);
     }
 
     @PutMapping("/{id}")
-    @ApiOperation(value = "Actualizar los datos del alumno")
-    public ResponseEntity<?> actualizarAlumno(@PathVariable Integer id, @RequestBody @ApiParam(name = "Alumno de la universidad") AlumnoDTO alumnoDTO, BindingResult result) {
+    @Operation(summary = "Actualizar los datos de un alumno existente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "Alumno actualizado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos o alumno no encontrado", content = @Content)
+    })
+    public ResponseEntity<?> actualizarAlumno(
+            @PathVariable
+            @Parameter(description = "ID del alumno a actualizar") Integer id,
+            @Valid @RequestBody
+            @Parameter(description = "Datos actualizados del alumno") AlumnoDTO alumnoDTO,
+            BindingResult result) {
+
         Map<String, Object> mensaje = new HashMap<>();
-        if(result.hasErrors()){
+
+        if (result.hasErrors()) {
             mensaje.put("success", Boolean.FALSE);
             mensaje.put("validaciones", super.obtenerValidaciones(result));
             return ResponseEntity.badRequest().body(mensaje);
         }
-        Alumno alumnoUpdate = null;
+
         PersonaDTO personaDTO = super.buscarPersonaPorId(id);
-        if (personaDTO == null){
+        if (personaDTO == null) {
             mensaje.put("success", Boolean.FALSE);
             mensaje.put("mensaje", String.format("No existe %s con ID %d", nombre_entidad, id));
             return ResponseEntity.badRequest().body(mensaje);
         }
 
         Alumno alumno = alumnoMapper.mapAlumno(alumnoDTO);
+        Alumno alumnoUpdate = alumnoMapper.mapAlumno((AlumnoDTO) personaDTO);
 
-        alumnoUpdate = alumnoMapper.mapAlumno((AlumnoDTO) personaDTO);
         alumnoUpdate.setNombre(alumno.getNombre());
         alumnoUpdate.setApellido(alumno.getApellido());
         alumnoUpdate.setDni(alumno.getDni());
@@ -125,11 +150,12 @@ public class AlumnoDtoController extends PersonaDtoController{
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation(value = "Eliminar alumno del sistema")
-    public ResponseEntity<?> borrarAlumno(@PathVariable Integer id){
+    @Operation(summary = "Eliminar un alumno por ID")
+    @ApiResponse(responseCode = "202", description = "Alumno eliminado exitosamente")
+    public ResponseEntity<?> borrarAlumno(
+            @PathVariable
+            @Parameter(description = "ID del alumno a eliminar") Integer id) {
         service.deteteById(id);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
-
-
 }
