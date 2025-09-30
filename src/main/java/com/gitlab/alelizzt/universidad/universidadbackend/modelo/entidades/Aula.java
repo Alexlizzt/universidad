@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "aulas")
@@ -39,6 +40,7 @@ public class Aula implements Serializable {
             name = "pabellon_id",
             foreignKey = @ForeignKey(name = "FK_PABELLON_ID")
     )
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "aulas"})
     private Pabellon pabellon;
     public Aula() {
     }
@@ -50,6 +52,16 @@ public class Aula implements Serializable {
         this.cantidadPupitres = cantidadPupitres;
         this.pizarron = pizarron;
     }
+
+    public Aula(Integer id, Integer nroAula, String medidas, Integer cantidadPupitres, Pizarron pizarron, Pabellon pabellon) {
+        this.id = id;
+        this.nroAula = nroAula;
+        this.medidas = medidas;
+        this.cantidadPupitres = cantidadPupitres;
+        this.pizarron = pizarron;
+        this.pabellon = pabellon;
+    }
+
 
     public Integer getId() {
         return id;
@@ -141,13 +153,14 @@ public class Aula implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Aula)) return false;
         Aula aula = (Aula) o;
-        return id.equals(aula.id) && nroAula.equals(aula.nroAula);
+        return Objects.equals(id, aula.id) && Objects.equals(nroAula, aula.nroAula);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id, nroAula);
     }
+
 }

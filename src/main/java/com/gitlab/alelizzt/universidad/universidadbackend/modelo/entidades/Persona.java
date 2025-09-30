@@ -11,6 +11,12 @@ import java.util.Objects;
 @Entity
 @Table(name = "personas")
 @Inheritance(strategy = InheritanceType.JOINED)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "tipo")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = Alumno.class, name = "alumno"),
+    @JsonSubTypes.Type(value = Profesor.class, name = "profesor"),
+    @JsonSubTypes.Type(value = Empleado.class, name = "empleado")
+})
 public abstract class Persona implements Serializable {
 
     @Id
@@ -128,7 +134,7 @@ public abstract class Persona implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Persona persona = (Persona) o;
-        return id.equals(persona.id) && dni.equals(persona.dni);
+        return Objects.equals(id, persona.id) && Objects.equals(dni, persona.dni);
     }
 
     @Override

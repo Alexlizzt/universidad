@@ -144,7 +144,7 @@ public class Carrera implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Carrera carrera = (Carrera) o;
-        return id.equals(carrera.id) && nombre.equals(carrera.nombre);
+        return Objects.equals(id, carrera.id) && Objects.equals(nombre, carrera.nombre);
     }
 
     @Override

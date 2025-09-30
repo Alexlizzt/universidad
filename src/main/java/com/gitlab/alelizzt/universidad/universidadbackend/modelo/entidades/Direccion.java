@@ -74,6 +74,24 @@ public class Direccion implements Serializable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Direccion)) return false;
+        Direccion d = (Direccion) o;
+        return Objects.equals(calle, d.calle) &&
+            Objects.equals(numero, d.numero) &&
+            Objects.equals(codigoPostal, d.codigoPostal) &&
+            Objects.equals(dpto, d.dpto) &&
+            Objects.equals(piso, d.piso) &&
+            Objects.equals(localidad, d.localidad);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(calle, numero, codigoPostal, dpto, piso, localidad);
+    }
+
+    @Override
     public String toString() {
         return "Direccion{" +
                 "calle='" + calle + '\'' +

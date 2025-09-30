@@ -41,11 +41,11 @@ public class Profesor extends Persona{
         this.sueldo = sueldo;
     }
 
-    public Set<Carrera> getCarrera() {
+    public Set<Carrera> getCarreras() {
         return carreras;
     }
 
-    public void setCarrera(Set<Carrera> carreras) {
+    public void setCarreras(Set<Carrera> carreras) {
         this.carreras = carreras;
     }
 

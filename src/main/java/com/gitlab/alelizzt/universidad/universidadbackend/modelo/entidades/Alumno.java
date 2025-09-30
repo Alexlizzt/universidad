@@ -10,11 +10,7 @@ import jakarta.persistence.*;
 public class Alumno extends Persona{
 
     @ManyToOne(
-            optional = true,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE
-            },
+            optional = false,
             fetch = FetchType.LAZY
     )
     @JoinColumn(name = "carrera_id")
@@ -36,9 +32,10 @@ public class Alumno extends Persona{
         this.carrera = carrera;
     }
 
+
     @Override
     public String toString() {
-        return super.toString()+
-                "Alumno{}";
+        return super.toString() +
+           " Alumno{carrera=" + (carrera != null ? carrera.getNombre() : "Ninguna") + "}";
     }
 }

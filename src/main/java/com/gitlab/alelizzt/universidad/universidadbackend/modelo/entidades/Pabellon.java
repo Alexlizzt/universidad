@@ -34,6 +34,9 @@ public class Pabellon implements Serializable {
     )
     private Set<Aula> aulas;
 
+    @OneToMany(mappedBy = "pabellon", fetch = FetchType.LAZY)
+    private Set<Empleado> empleados;
+
     public Pabellon() {
     }
 
@@ -127,7 +130,7 @@ public class Pabellon implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Pabellon pabellon = (Pabellon) o;
-        return id.equals(pabellon.id) && nombre.equals(pabellon.nombre);
+        return Objects.equals(id, pabellon.id) && Objects.equals(nombre, pabellon.nombre);
     }
 
     @Override

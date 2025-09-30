@@ -10,19 +10,15 @@ import java.math.BigDecimal;
 @PrimaryKeyJoinColumn(name = "persona_id")
 public class Empleado extends Persona {
 
+    @Column(nullable = false)
     private BigDecimal sueldo;
-    @Column(name = "tipo_empleado")
+
+    @Column(name = "tipo_empleado", nullable = false)
     @Enumerated(EnumType.STRING)
     private TipoEmpleado tipoEmpleado;
 
-    @OneToOne(
-            optional = true,
-            cascade = CascadeType.ALL
-    )
-    @JoinColumn(
-            name = "pabellon_id",
-            foreignKey = @ForeignKey(name = "FK_PABELLON_ID")
-    )
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "pabellon_id", foreignKey = @ForeignKey(name = "FK_PABELLON_ID"))
     private Pabellon pabellon;
 
     public Empleado() {
