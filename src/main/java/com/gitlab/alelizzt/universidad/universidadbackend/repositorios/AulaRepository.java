@@ -7,12 +7,13 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface AulaRepository  extends CrudRepository<Aula, Integer> {
 
-    @Query("select a from Aula a where a.pizarron = ?1 ")
-    Iterable<Aula> buscarAulasPorPizarron(Pizarron tipoPizarron);
+    Iterable<Aula> findAulasByPizarron(Pizarron tipoPizarron);
 
-    @Query("select a from Aula a, Pabellon p where p.nombre = ?1 ")
+    @Query("select a from Aula a where a.pabellon.nombre = ?1")
     Iterable<Aula> buscarAulasPorPabellon(String pabellon);
 
     @Query("select a from Aula a where a.nroAula = ?1 ")
     Aula buscarAulaporNumero(int numAula);
+
+    Aula findAulaByNroAula(Integer nroAula);
 }

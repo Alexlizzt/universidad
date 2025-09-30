@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository("repositorioEmpleados")
 public interface EmpleadoRepository extends PersonaRepository{
-    @Query("select e from Empleado e where ?1 IN(e.tipoEmpleado)")
-    Iterable<Persona> findEmpleadoByTipoEmpleado(String tipoEmpleado);
+    @Query("SELECT e FROM Empleado e WHERE e.tipoEmpleado = ?1")
+    Iterable<Empleado> findEmpleadoByTipoEmpleado(TipoEmpleado tipoEmpleado);
+
 }

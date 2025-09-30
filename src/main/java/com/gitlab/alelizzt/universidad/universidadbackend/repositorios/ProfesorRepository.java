@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository("repositorioProfesores")
 public interface ProfesorRepository extends EmpleadoRepository {
-    @Query("select p from Profesor p join fetch p.carreras c where ?1 IN(c.nombre)")
-    Iterable<Persona> findProfesoresByCarrera(String carrera);
+    @Query("SELECT p FROM Profesor p JOIN FETCH p.carreras c WHERE c.nombre = ?1")
+    Iterable<Profesor> findProfesoresByCarrera(String nombreCarrera);
 }
