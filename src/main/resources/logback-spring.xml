@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Propiedades globales -->
+    <property name="LOG_PATH" value="./logs" />
+    <property name="LOG_FILE" value="${LOG_PATH}/universidad-log.log" />
+    <property name="ARCHIVE_PATTERN" value="${LOG_PATH}/archived/universidad-log-%d{yyyy-MM-dd}.%i.log"/>
+    <property name="DEFAULT_PATTERN" value="%d{dd-MMM-yyyy | HH:mm:ss} [%thread] %-5level [%X{spring.profiles.active:-default}] %logger - %msg%n"/>
+
+    <!-- ========================= -->
+    <!-- Appender para archivo -->
+    <!-- ========================= -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${ARCHIVE_PATTERN}</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${DEFAULT_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ========================= -->
+    <!-- Perfil DEV: consola con colores -->
+    <!-- ========================= -->
+    <springProfile name="dev">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <providers>
+                    <pattern>
+                        <pattern>
+                            %cyan(%d{dd-MMM-yyyy | HH:mm:ss}) %green([%thread]) %highlight(%-5level) %yellow([dev]) %blue(%logger{36}) - %msg%n
+                        </pattern>
+                    </pattern>
+                </providers>
+            </encoder>
+        </appender>
+
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="FILE" />
+        </root>
+    </springProfile>
+
+    <!-- ========================= -->
+    <!-- Perfil PROD: consola monocromática -->
+    <!-- ========================= -->
+    <springProfile name="prod">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%pink(%d{dd-MMM-yyyy | HH:mm:ss}) %green([%thread]) %highlight(%-5level) %purple([prod]) %cyan(%logger) - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <root level="WARN">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="FILE" />
+        </root>
+    </springProfile>
+
+    <!-- ========================= -->
+    <!-- Perfil DEFAULT: menos info -->
+    <!-- ========================= -->
+    <springProfile name="default">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%d{dd-MMM-yyyy | HH:mm:ss} [%thread] %-5level [default] %logger - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <root level="WARN">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="FILE" />
+        </root>
+    </springProfile>
+
+</configuration>
