@@ -2,15 +2,13 @@ package com.alexlizzt.universidad.modelo.entidades.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import jakarta.validation.constraints.NotEmpty;
-
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Schema(name = "DireccionDTO", description = "Dirección de una persona o edificio en la universidad")
 public class DireccionDTO {
 

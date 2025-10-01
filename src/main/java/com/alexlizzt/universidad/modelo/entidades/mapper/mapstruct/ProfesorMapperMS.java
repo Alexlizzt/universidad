@@ -6,14 +6,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { DireccionMapperMS.class })
 public interface ProfesorMapperMS {
     @Mappings({
-            @Mapping(source = "id", target = "id"),
-            @Mapping(source = "nombre", target = "nombre"),
-            @Mapping(source = "apellido", target = "apellido"),
-            @Mapping(source = "dni", target = "dni"),
-            @Mapping(source = "direccion", target = "direccion"),
+            // Campos heredados de Persona - si los campos coinciden en nombre, no hace falta mapearlos explícitamente
             @Mapping(source = "sueldo", target = "sueldo")
     })
     ProfesorDTO mapProfesor(Profesor profesor);

@@ -7,7 +7,7 @@ import org.mapstruct.MapperConfig;
 import org.mapstruct.MappingTarget;
 
 @MapperConfig
-public interface EmpleadoMapperConfig {
+public interface EmpleadoMapperConfig extends PersonaMapperConfig {
 
     @InheritConfiguration(name = "mapPersona")
     void mapEmpleado(Empleado empleado, @MappingTarget EmpleadoDTO empleadoDTO);

@@ -3,13 +3,12 @@ package com.alexlizzt.universidad.modelo.entidades.dto;
 import com.alexlizzt.universidad.modelo.entidades.enumeradores.Pizarron;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(
