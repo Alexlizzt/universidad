@@ -13,20 +13,36 @@ docker build -t my-postgres-db ./
 docker run -d --name my-postgresdb-container -p 5432:5432 my-postgres-db
 ```
 
+posteriormente si requiere utilizar el contenedor:
+```bash
+docker <start/stop> my-postgresdb-container
+```
+
 ### Ejecución del código
+El proyecto contempla distintos perfiles de ejecucion
 ```bash
 mvn spring-boot:run
+```
+
+### A nivel de desarrollo
+```bash
+./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
+```
+
+### A nivel de produccion
+```bash
+java -jar universidad-backend.jar --spring.profiles.active=prod
 ```
 
 Si requiere compilar y ejecutar el proyecto
 ```bash
 maven package
-java -jar target/universidad-backend-0.0.1-SNAPSHOT.jar
+java -jar target/universidad-backend-0.0.2-SNAPSHOT.jar
 ```
 
 ## Documentación del API
 
-Una vez ejecutado el proyecto, revisar: [http://localhost:9081/api/v2/universidad/swagger-ui](http://localhost:9081/api/v2/universidad/swagger-ui)
+Una vez ejecutado el proyecto, revisar: [http://localhost:9081/api/v2/universidad/swagger-ui/index.html](http://localhost:9081/api/v2/universidad/swagger-ui/index.html)
 
 ---
 ## Especificaciones técnicas
