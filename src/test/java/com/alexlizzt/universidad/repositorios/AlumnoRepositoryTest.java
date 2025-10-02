@@ -25,18 +25,12 @@ class AlumnoRepositoryTest {
   @Test
   void buscarAlumnosPorNombreCarrera() {
     //given
-    Iterable<Persona> personas = alumnoRepository.saveAll(
-            Arrays.asList(
-                    alumno01(),
-                    alumno02(),
-                    alumno03())
-    );
+      List<Persona> personas = Arrays.asList(alumno01(), alumno02(), alumno03());
+      Carrera carrera = carreraRepository.save(carrera01(false));
 
-    Carrera save = carreraRepository.save(carrera01(false));
+      personas.forEach(p -> ((Alumno)p).setCarrera(carrera));
 
-    personas.forEach(alumno -> ((Alumno)alumno).setCarrera(save));
-
-    alumnoRepository.saveAll(personas);
+      alumnoRepository.saveAll(personas);
 
     //when
     String carreraNombre = "Ingenieria en Sistemas";
@@ -49,18 +43,12 @@ class AlumnoRepositoryTest {
   @Test
   void buscarAlumnosPorNombreCarrerasinValores() {
     //given
-    Iterable<Persona> personas = alumnoRepository.saveAll(
-            Arrays.asList(
-                    alumno01(),
-                    alumno02(),
-                    alumno03())
-    );
+      List<Persona> personas = Arrays.asList(alumno01(), alumno02(), alumno03());
+      Carrera carrera = carreraRepository.save(carrera01(false));
 
-    Carrera save = carreraRepository.save(carrera01(false));
+      personas.forEach(p -> ((Alumno)p).setCarrera(carrera));
 
-    personas.forEach(alumno -> ((Alumno)alumno).setCarrera(save));
-
-    alumnoRepository.saveAll(personas);
+      alumnoRepository.saveAll(personas);
 
     //when
     String carreraNombre = "Ingenieria en Alimentos";

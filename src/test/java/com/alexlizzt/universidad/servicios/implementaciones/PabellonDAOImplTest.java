@@ -9,7 +9,7 @@ import static org.mockito.Mockito.*;
 
 class PabellonDAOImplTest {
 
-    PabellonDAO pabellonDAO;
+    PabellonDAOImpl pabellonDAO;
     PabellonRepository pabellonRepository;
 
     @BeforeEach

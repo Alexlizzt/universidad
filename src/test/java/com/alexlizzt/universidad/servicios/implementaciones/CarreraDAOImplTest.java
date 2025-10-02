@@ -15,7 +15,7 @@ import static org.mockito.Mockito.*;
 
 class CarreraDAOImplTest {
 
-    CarreraDAO carreraDAO;
+    CarreraDAOImpl carreraDAO;
     CarreraRepository carreraRepository;
 
     @BeforeEach

@@ -1,8 +1,6 @@
 package com.alexlizzt.universidad.repositorios;
 
-import com.alexlizzt.universidad.modelo.entidades.Empleado;
-import com.alexlizzt.universidad.modelo.entidades.Persona;
-import com.alexlizzt.universidad.modelo.entidades.Profesor;
+import com.alexlizzt.universidad.modelo.entidades.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -22,7 +20,9 @@ class PersonaRepositoryTest {
     @Qualifier("repositorioAlumnos")
     PersonaRepository alumnoRepository;
     @Autowired
-    @Qualifier("empleadoRepository")
+    CarreraRepository carreraRepository;
+    @Autowired
+    @Qualifier("repositorioEmpleados")
     PersonaRepository empleadoRepository;
     @Autowired
     @Qualifier("repositorioProfesores")
@@ -59,12 +59,13 @@ class PersonaRepositoryTest {
     @Test
     void buscarPersonasPorApellido() {
         //given
-        Iterable<Persona> personas = alumnoRepository.saveAll(
-                Arrays.asList(
-                        alumno01(),
-                        alumno02(),
-                        alumno03())
-        );
+        List<Persona> personas = Arrays.asList(alumno01(), alumno02(), alumno03());
+        Carrera carrera = carreraRepository.save(carrera01(false));
+
+        personas.forEach(p -> ((Alumno)p).setCarrera(carrera));
+
+        alumnoRepository.saveAll(personas);
+
 
         //when
         String apellido = "Benitez";

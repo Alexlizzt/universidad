@@ -14,7 +14,7 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class PersonaDAOImplTest {
 
-    PersonaDAO personaDAO;
+    PersonaDAOImpl personaDAO;
     @Mock
     AlumnoRepository alumnoRepository;
 

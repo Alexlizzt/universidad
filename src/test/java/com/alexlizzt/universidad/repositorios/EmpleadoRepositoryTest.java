@@ -17,7 +17,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @DataJpaTest
 class EmpleadoRepositoryTest {
   @Autowired
-  @Qualifier("empleadoRepository")
+  @Qualifier("repositorioEmpleados")
   PersonaRepository empleadoRepository;
 
     @Test

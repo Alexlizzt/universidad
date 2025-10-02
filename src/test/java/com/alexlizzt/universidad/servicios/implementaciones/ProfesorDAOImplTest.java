@@ -1,20 +1,24 @@
 package com.alexlizzt.universidad.servicios.implementaciones;
 
 import com.alexlizzt.universidad.repositorios.ProfesorRepository;
-import com.alexlizzt.universidad.servicios.contratos.ProfesorDAO;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class ProfesorDAOImplTest {
 
+    @Mock
     ProfesorRepository profesorRepository;
-    @Autowired
-    ProfesorDAO profesorDAO;
+
+    @InjectMocks
+    ProfesorDAOImpl profesorDAO;
+
     @Test
     void findProfesoresByCarrera() {
         //when
