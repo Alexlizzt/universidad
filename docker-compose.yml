@@ -1,0 +1,17 @@
+services:
+  app:
+    build: .
+    ports:
+      - "9081:9081"
+    env_file:
+      - .env.docker
+    depends_on:
+      - db
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: universidad
+      POSTGRES_USER: postgresuser
+      POSTGRES_PASSWORD: dockerpassword
+    ports:
+      - "5432:5432"

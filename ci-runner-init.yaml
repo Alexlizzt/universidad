@@ -1,0 +1,37 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+
+packages:
+  - curl
+  - git
+  - docker.io
+  - docker-compose
+  - openjdk-17-jdk
+  - maven
+  - unzip
+
+runcmd:
+  # Agregar usuario ubuntu al grupo docker
+  - usermod -aG docker ubuntu
+
+  # Habilitar e iniciar Docker
+  - systemctl enable docker
+  - systemctl start docker
+
+  # Crear carpeta del runner
+  - mkdir -p /home/ubuntu/actions-runner
+  - chown ubuntu:ubuntu /home/ubuntu/actions-runner
+
+  # Descargar el runner como usuario ubuntu
+  - su - ubuntu -c '
+      cd /home/ubuntu/actions-runner &&
+      curl -O -L https://github.com/actions/runner/releases/download/v2.308.0/actions-runner-linux-x64-2.308.0.tar.gz &&
+      tar xzf actions-runner-linux-x64-2.308.0.tar.gz
+    '
+
+  # Mensaje de instrucciones para registrar el runner manualmente
+  - echo "⚠️  Ve a tu repositorio y registra el runner manualmente con ./config.sh"
+  - echo "👉 URL: https://github.com/<TU_USUARIO>/<TU_REPO>/settings/actions/runners/new"
+
+final_message: "✅ CI/CD runner listo. Accede con 'multipass shell ci-runner'"

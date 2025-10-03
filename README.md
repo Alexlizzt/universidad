@@ -24,10 +24,21 @@ El proyecto contempla distintos perfiles de ejecucion
 mvn spring-boot:run
 ```
 
+### Ejecución de pruebas unitarias
+```bash
+mvn clean verify
+```
+
 ### A nivel de desarrollo
 ```bash
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
 ```
+
+### Compilar .jar
+```bash
+./mvnw clean package
+```
+Esto creará el .jar en el directorio target/.
 
 ### A nivel de produccion
 ```bash
@@ -66,5 +77,38 @@ Una vez ejecutado el proyecto, revisar: [http://localhost:9081/api/v2/universida
 ## Autores y reconocimiento
 Parte del proyecto pertenece al curso [Spring boot en simples pasos](https://www.udemy.com/course/spring-boot-en-simples-pasos/), agradezco a Matias Macrino por su paciencia y guia en el desarrollo del mismo.
 
+## CICD
+Crea vm para automatizacion
+```bash
+multipass launch -n ci-runner --cpus 2 --mem 4G --disk 20G --cloud-init ci-runner-init.yaml
+```
+una vez la vm esta lista
+```bash
+multipass shell ci-runner
+cd actions-runner
+./config.sh --url https://github.com/alexlizzt/universidad --token <TOKEN>
+sudo ./svc.sh install
+sudo ./svc.sh start
+```
+conectarse a la vm y verificar:
+```bash
+multipass shell ci-runner
+java -version
+mvn -version
+docker --version
+```
+ejecutar comandos en la vm fuera
+```bash
+multipass exec ci-runner -- lsb_release -a
+```
+detener la vm
+```bash
+multipass stop ci-runner
+```
+eliminar la vm
+```bash
+multipass stop ci-runner
+multipass purge
+```
 ## Estado del proyecto
 ![coverage](https://img.shields.io/badge/coverage-40%25-yellowgreen)
