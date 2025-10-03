@@ -57,7 +57,7 @@ public class PersonaController extends GenericController<Persona, PersonaDAO> {
         if(!oPersona.isPresent()){
             //throw new BadRequestException(String.format("No se encontro Persona con dni %d", dni));
             mensaje.put("success", Boolean.FALSE);
-            mensaje.put("mensaje", String.format("No se encontro Persona con dni %d", dni));
+            mensaje.put("mensaje", String.format("No se encontro Persona con dni %s", dni));
             return ResponseEntity.badRequest().body(mensaje);
         }
         mensaje.put("datos", oPersona.get());

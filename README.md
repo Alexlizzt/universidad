@@ -68,11 +68,9 @@ Una vez ejecutado el proyecto, revisar: [http://localhost:9081/api/v2/universida
 
 ## Roadmap
 
-- [ ] Integrar SonarQube para evaluar el código fuente.
+- [x] Integrar SonarQube para evaluar el código fuente.
 - [ ] Refactorización del código.
 - [ ] Integración con JasperReports.
-- [ ] Agregar FrontEnd para consumir el servicio.
-- [ ] Pruebas unitarias del FrontEnd.
 
 ## Autores y reconocimiento
 Parte del proyecto pertenece al curso [Spring boot en simples pasos](https://www.udemy.com/course/spring-boot-en-simples-pasos/), agradezco a Matias Macrino por su paciencia y guia en el desarrollo del mismo.
@@ -110,5 +108,15 @@ eliminar la vm
 multipass stop ci-runner
 multipass purge
 ```
-## Estado del proyecto
-![coverage](https://img.shields.io/badge/coverage-40%25-yellowgreen)
+
+para ejecutar el analisis, con el servidor de sonar previamente arrancado:
+```bash
+./mvnw clean verify sonar:sonar \
+-Dsonar.projectKey=universidad \
+-Dsonar.host.url=http://localhost:9000 \
+-Dsonar.login=<tu-token>
+```
+para integrar jacoco en sonar:
+```bash
+-Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+```
