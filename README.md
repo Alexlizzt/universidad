@@ -1,122 +1,243 @@
-# Universidad
+# 🎓 Universidad
 
-Api REST para administrar la información de una Universidad con SpringBoot
+API REST para administrar la información de una universidad, desarrollada con Spring Boot.
 
-## Despliegue del proyecto
+---
 
-### Servicio de base de datos
-Para lograr ejecutar el proyecto con éxito, se proporciona un contenedor con la base de datos postgres inicializada
+## 📦 Tecnologías y herramientas
+
+- Java 11
+- Spring Boot 2.5.6
+- PostgreSQL (vía Docker)
+- Maven
+- JUnit 5
+- Mockito + H2 (pruebas de integración)
+- Swagger (documentación de API REST)
+- MapStruct (DTOs)
+- Lombok (requerido en el IDE)
+- Docker Compose
+- SonarQube + Jacoco (análisis de calidad de código)
+- GitHub Actions + Multipass (CI/CD)
+
+---
+
+## 🚀 Requisitos previos
+
+Antes de ejecutar este proyecto, asegúrate de tener instalado:
+
+- [Java 11](https://adoptium.net)
+- [Maven](https://maven.apache.org/)
+- [Docker & Docker Compose](https://docs.docker.com/get-docker/)
+- [Multipass](https://multipass.run/) (para CI/CD opcional)
+- Plugin de Lombok en tu IDE ([Descargar aquí](https://projectlombok.org/download))
+
+---
+
+## 🐘 Base de datos (PostgreSQL con Docker)
+
+Para levantar el contenedor de PostgreSQL inicializado:
+
 ```bash
 git clone https://github.com/Alelizzt/universidad.git
 cd universidad
-docker build -t my-postgres-db ./
-docker run -d --name my-postgresdb-container -p 5432:5432 my-postgres-db
+docker compose up -d db
 ```
 
-posteriormente si requiere utilizar el contenedor:
+Para iniciar el contenedor nuevamente en el futuro:
 ```bash
-docker <start/stop> my-postgresdb-container
+docker compose up -d db
 ```
+---
+## ▶️ Ejecución del proyecto
 
-### Ejecución del código
-El proyecto contempla distintos perfiles de ejecucion
-```bash
-mvn spring-boot:run
-```
+### Especificar perfil manualmente
 
-### Ejecución de pruebas unitarias
-```bash
-mvn clean verify
-```
-
-### A nivel de desarrollo
+#### Ejecutar proyecto:
+Puede arrancar el proyecto con el perfil desarrollador para facilitar el debugging.
 ```bash
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
 ```
-
-### Compilar .jar
+O por el contrario arrancar el proyecto en modo produccion y ocultar informacion del proyecto.
+```bash
+./mvnw spring-boot:run -Dspring-boot.run.profiles=prod
+```
+Si solo quiere ejecutar el proyecto sin compilarlo, utilice el fichero .jar
+```bash
+java -jar target/universidad-backend.jar --spring.profiles.active=prod
+```
+---
+## 🧪 Ejecutar pruebas
+### Unitarias e integración
+```bash
+./mvnw clean verify
+```
+## 🏗️ Compilar proyecto
+Para generar el fichero JAR
 ```bash
 ./mvnw clean package
 ```
-Esto creará el .jar en el directorio target/.
+El archivo .jar se generará en el directorio target/.
 
-### A nivel de produccion
+### Ejecutar el .jar:
 ```bash
-java -jar universidad-backend.jar --spring.profiles.active=prod
-```
-
-Si requiere compilar y ejecutar el proyecto
-```bash
-maven package
 java -jar target/universidad-backend-0.0.2-SNAPSHOT.jar
 ```
+---
+## 📌 Endpoints principales del API
 
-## Documentación del API
+| Método | Endpoint                                      | Descripción                                 |
+|--------|-----------------------------------------------|---------------------------------------------|
+| GET    | `/api/v2/universidad/carreras`                | Listar todas las carreras                   |
+| GET    | `/api/v2/universidad/carreras/{id}`           | Obtener una carrera por ID                  |
+| POST   | `/api/v2/universidad/carreras`                | Crear una nueva carrera                     |
+| PUT    | `/api/v2/universidad/carreras/{id}`           | Actualizar una carrera                      |
+| DELETE | `/api/v2/universidad/carreras/{id}`           | Eliminar una carrera                        |
+| GET    | `/api/v2/universidad/alumnos`                 | Listar todos los alumnos                    |
+| GET    | `/api/v2/universidad/alumnos/{id}`            | Obtener un alumno por ID                    |
+| POST   | `/api/v2/universidad/alumnos`                 | Crear un nuevo alumno                       |
+| PUT    | `/api/v2/universidad/alumnos/{id}`            | Actualizar un alumno                        |
+| DELETE | `/api/v2/universidad/alumnos/{id}`            | Eliminar un alumno                          |
+| GET    | `/api/v2/universidad/profesores`              | Listar todos los profesores                 |
+| GET    | `/api/v2/universidad/profesores/{id}`         | Obtener un profesor por ID                  |
+| POST   | `/api/v2/universidad/profesores`              | Crear un nuevo profesor                     |
+| PUT    | `/api/v2/universidad/profesores/{id}`         | Actualizar un profesor                      |
+| DELETE | `/api/v2/universidad/profesores/{id}`         | Eliminar un profesor                        |
+| GET    | `/api/v2/universidad/aulas`                   | Listar todas las aulas                      |
+| GET    | `/api/v2/universidad/aulas/{id}`              | Obtener un aula por ID                      |
+| POST   | `/api/v2/universidad/aulas`                   | Crear una nueva aula                        |
+| PUT    | `/api/v2/universidad/aulas/{id}`              | Actualizar un aula                          |
+| DELETE | `/api/v2/universidad/aulas/{id}`              | Eliminar un aula                            |
+| GET    | `/api/v2/universidad/pabellones`              | Listar todos los pabellones                 |
+| GET    | `/api/v2/universidad/pabellones/{id}`         | Obtener un pabellón por ID                  |
+| POST   | `/api/v2/universidad/pabellones`              | Crear un nuevo pabellón                     |
+| PUT    | `/api/v2/universidad/pabellones/{id}`         | Actualizar un pabellón                      |
+| DELETE | `/api/v2/universidad/pabellones/{id}`         | Eliminar un pabellón                        |
+---
+## 📑 Documentación del API
 
-Una vez ejecutado el proyecto, revisar: [http://localhost:9081/api/v2/universidad/swagger-ui/index.html](http://localhost:9081/api/v2/universidad/swagger-ui/index.html)
+Una vez iniciado el proyecto, accede a la documentación de Swagger en:
+
+http://localhost:9081/api/v2/universidad/swagger-ui/index.html
 
 ---
-## Especificaciones técnicas
-- Spring boot 2.5.6
-- Docker (Postgresql database)
-- Java 11
-- Pruebas unitarias con JUnit5
-- Pruebas de integración con Mockito y H2
-- Mapstruct para el mapeo de objetos y concepto de DTO
-- Se debe tener configurado el IDE con Lombok. Descargar [aqui](https://projectlombok.org/download)
-- Documentación de API Rest con Swagger
+## 🗂️ Estructura del proyecto
 
-## Roadmap
+```
+universidad/
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/
+│   │   │       └── gitlab/
+│   │   │           └── alelizzt/
+│   │   │               └── universidad/
+│   │   │                   ├── universidadbackend/
+│   │   │                   │   ├── controladores/
+│   │   │                   │   ├── modelos/
+│   │   │                   │   ├── repositorios/
+│   │   │                   │   ├── servicios/
+│   │   │                   │   └── UniversidadBackendApplication.java
+│   │   └── resources/
+│   │       ├── application.properties
+│   │       └── static/
+│   └── test/
+│       └── java/
+│           └── com/
+│               └── gitlab/
+│                   └── alelizzt/
+│                       └── universidad/
+│                           └── universidadbackend/
+│                               └── (tests)
+├── docker-compose.yml
+├── Dockerfile
+├── pom.xml
+└── README.md
+```
 
-- [x] Integrar SonarQube para evaluar el código fuente.
-- [ ] Refactorización del código.
-- [ ] Integración con JasperReports.
+- **controladores/**: Controladores REST (endpoints del API)
+- **modelos/**: Entidades JPA y DTOs
+- **repositorios/**: Interfaces de acceso a datos (Spring Data JPA)
+- **servicios/**: Lógica de negocio y servicios
+- **resources/**: Configuración y recursos estáticos
+- **test/**: Pruebas unitarias y de integración
 
-## Autores y reconocimiento
-Parte del proyecto pertenece al curso [Spring boot en simples pasos](https://www.udemy.com/course/spring-boot-en-simples-pasos/), agradezco a Matias Macrino por su paciencia y guia en el desarrollo del mismo.
+---
+## 🛠️ CI/CD con Multipass
 
-## CICD
-Crea vm para automatizacion
+Crear una VM para el runner:
 ```bash
 multipass launch -n ci-runner --cpus 2 --mem 4G --disk 20G --cloud-init ci-runner-init.yaml
 ```
-una vez la vm esta lista
+Acceder a la VM:
 ```bash
 multipass shell ci-runner
+```
+Configurar GitHub Actions Runner:
+```bash
 cd actions-runner
 ./config.sh --url https://github.com/alexlizzt/universidad --token <TOKEN>
 sudo ./svc.sh install
 sudo ./svc.sh start
 ```
-conectarse a la vm y verificar:
+Verificar herramientas dentro de la VM:
 ```bash
-multipass shell ci-runner
 java -version
 mvn -version
 docker --version
 ```
-ejecutar comandos en la vm fuera
+Comandos útiles:
+
+- Ejecutar comandos desde fuera:
 ```bash
 multipass exec ci-runner -- lsb_release -a
 ```
-detener la vm
+- Detener la VM:
 ```bash
 multipass stop ci-runner
 ```
-eliminar la vm
+- Eliminar la VM:
 ```bash
 multipass stop ci-runner
 multipass purge
 ```
-
-para ejecutar el analisis, con el servidor de sonar previamente arrancado:
+---
+## 📊 Análisis de código con SonarQube
+Con SonarQube corriendo en local:
 ```bash
 ./mvnw clean verify sonar:sonar \
--Dsonar.projectKey=universidad \
--Dsonar.host.url=http://localhost:9000 \
--Dsonar.login=<tu-token>
+  -Dsonar.projectKey=universidad \
+  -Dsonar.host.url=http://localhost:9000 \
+  -Dsonar.login=<tu-token>
 ```
-para integrar jacoco en sonar:
+Si desea integrar la compatibilidad con Jacoco, agrege la siguiente linea al final del comando anterior:
 ```bash
 -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
 ```
+---
+## 🗺️ Roadmap
+- [x] Integrar SonarQube para evaluar el código fuente.
+- [ ] Refactorización del código.
+- [ ] Integración con JasperReports.
+---
+## 🤝 Contribuciones
+
+¡Las contribuciones son bienvenidas!
+
+Para contribuir:
+1. Haz un fork del repositorio
+2. Crea una nueva rama: `git checkout -b feature/nueva-funcionalidad`
+3. Realiza tus cambios
+4. Abre un Pull Request explicando el cambio
+
+Por favor, asegúrate de seguir la estructura del proyecto y escribir pruebas si es necesario.
+
+---
+## 👨‍🏫 Créditos
+
+Este proyecto parte de una base realizada en el curso
+[Spring boot en simples pasos](https://www.udemy.com/course/spring-boot-en-simples-pasos/) de Matias Macrino. Ha sido modificado para profundizar y ampliar su alcance.
+
+---
+## 🧾 Licencia
+
+Este proyecto está licenciado bajo la Licencia MIT.
