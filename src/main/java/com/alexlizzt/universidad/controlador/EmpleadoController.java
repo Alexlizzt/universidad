@@ -60,7 +60,7 @@ public class EmpleadoController extends PersonaController{
     }
 
     @PutMapping("{idEmpleado}/pabellon")
-    public ResponseEntity<?> asignarPabellonEmpleado(@RequestParam Integer idEmpleado, @RequestBody Pabellon pabellon){
+    public ResponseEntity<?> asignarPabellonEmpleado(@PathVariable Integer idEmpleado, @RequestBody Pabellon pabellon){
         Map<String, Object> mensaje = new HashMap<>();
         Optional<Persona> oEmpleado = service.findById(idEmpleado);
         if(!oEmpleado.isPresent()){
