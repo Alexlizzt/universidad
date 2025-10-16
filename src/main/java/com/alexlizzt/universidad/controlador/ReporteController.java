@@ -20,8 +20,11 @@ import java.io.ByteArrayInputStream;
 @Tag(name = "Reportes", description = "Generacion de reportes en pdf")
 public class ReporteController {
 
-    @Autowired
     private ReporteService reporteService;
+
+    public ReporteController(ReporteService reporteService) {
+        this.reporteService = reporteService;
+    }
 
     @GetMapping("/general")
     @Operation(summary = "Generar reporte general de la universidad", description = "Devuelve toda la informacion general de la universidad")
