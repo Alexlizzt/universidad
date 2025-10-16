@@ -10,6 +10,8 @@ import org.openpdf.text.Font;
 import org.openpdf.text.pdf.PdfPCell;
 import org.openpdf.text.pdf.PdfPTable;
 import org.openpdf.text.pdf.PdfWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,8 @@ public class ReporteServiceImpl implements ReporteService {
 
     @Autowired
     private PabellonDAO pabellonDAO;
+
+    private static final Logger logger = LoggerFactory.getLogger(ReporteServiceImpl.class);
 
     @Override
     public ByteArrayInputStream generarReporteAlumnosPorCarrera(String nombreCarrera) {
@@ -64,7 +68,7 @@ public class ReporteServiceImpl implements ReporteService {
 
             document.close();
         } catch (DocumentException e) {
-            e.printStackTrace();
+            logger.error("Error al generar el documento PDF ", e);
         }
 
         return new ByteArrayInputStream(out.toByteArray());
@@ -159,7 +163,7 @@ public class ReporteServiceImpl implements ReporteService {
 
             document.close();
         } catch (DocumentException e) {
-            e.printStackTrace();
+            logger.error("Error al generar el documento PDF", e);
         }
 
         return new ByteArrayInputStream(out.toByteArray());
