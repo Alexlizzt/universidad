@@ -29,11 +29,11 @@ import java.util.Optional;
 @Tag(name = "Aulas", description = "Operaciones relacionadas con las aulas")
 public class AulaDtoController extends GenericDtoController<Aula, AulaDAO> {
 
-    @Autowired
     private AulaMapperMS aulaMapper;
 
-    public AulaDtoController(AulaDAO service) {
+    public AulaDtoController(AulaDAO service, AulaMapperMS aulaMapper) {
         super(service, "Aula");
+        this.aulaMapper = aulaMapper;
     }
 
     @GetMapping
