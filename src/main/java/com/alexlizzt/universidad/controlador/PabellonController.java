@@ -1,5 +1,6 @@
 package com.alexlizzt.universidad.controlador;
 
+import com.alexlizzt.universidad.controlador.dto.PabellonDtoController;
 import com.alexlizzt.universidad.modelo.entidades.Pabellon;
 import com.alexlizzt.universidad.servicios.contratos.PabellonDAO;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -13,6 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @deprecated Desde la versión 2.0. Usa {@link PabellonDtoController} en su lugar.
+ */
 @Deprecated
 @RestController
 @RequestMapping("/pabellones")

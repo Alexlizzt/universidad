@@ -1,5 +1,6 @@
 package com.alexlizzt.universidad.controlador;
 
+import com.alexlizzt.universidad.controlador.dto.PersonaDtoController;
 import com.alexlizzt.universidad.modelo.entidades.Persona;
 import com.alexlizzt.universidad.servicios.contratos.PersonaDAO;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * @deprecated Desde la versión 2.0. Usa {@link PersonaDtoController} en su lugar.
+ */
 @Deprecated
 public class PersonaController extends GenericController<Persona, PersonaDAO> {
 

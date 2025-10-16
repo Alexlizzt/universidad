@@ -1,5 +1,6 @@
 package com.alexlizzt.universidad.controlador;
 
+import com.alexlizzt.universidad.controlador.dto.AulaDtoController;
 import com.alexlizzt.universidad.modelo.entidades.Aula;
 import com.alexlizzt.universidad.modelo.entidades.enumeradores.Pizarron;
 import com.alexlizzt.universidad.servicios.contratos.AulaDAO;
@@ -14,6 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @deprecated Desde la versión 2.0. Usa {@link AulaDtoController} en su lugar.
+ */
 @Deprecated
 @RestController
 @RequestMapping("/aulas")

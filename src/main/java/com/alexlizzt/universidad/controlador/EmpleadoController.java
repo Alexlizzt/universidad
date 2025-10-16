@@ -1,5 +1,6 @@
 package com.alexlizzt.universidad.controlador;
 
+import com.alexlizzt.universidad.controlador.dto.EmpleadoDtoController;
 import com.alexlizzt.universidad.modelo.entidades.Empleado;
 import com.alexlizzt.universidad.modelo.entidades.Pabellon;
 import com.alexlizzt.universidad.modelo.entidades.Persona;
@@ -17,6 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+
+/**
+ * @deprecated Desde la versión 2.0. Usa {@link EmpleadoDtoController} en su lugar.
+ */
 @Deprecated
 @RestController
 @RequestMapping("/empleados")

@@ -1,5 +1,6 @@
 package com.alexlizzt.universidad.controlador;
 
+import com.alexlizzt.universidad.controlador.dto.ProfesorDtoController;
 import com.alexlizzt.universidad.modelo.entidades.Carrera;
 import com.alexlizzt.universidad.modelo.entidades.Profesor;
 import com.alexlizzt.universidad.modelo.entidades.Persona;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
+/**
+ * @deprecated Desde la versión 2.0. Usa {@link ProfesorDtoController} en su lugar.
+ */
 @Deprecated
 @RestController
 @RequestMapping("/profesores")

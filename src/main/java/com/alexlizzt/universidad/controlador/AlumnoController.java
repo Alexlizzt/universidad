@@ -1,5 +1,6 @@
 package com.alexlizzt.universidad.controlador;
 
+import com.alexlizzt.universidad.controlador.dto.AlumnoDtoController;
 import com.alexlizzt.universidad.modelo.entidades.Alumno;
 import com.alexlizzt.universidad.modelo.entidades.Carrera;
 import com.alexlizzt.universidad.modelo.entidades.Persona;
@@ -15,6 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * @deprecated Desde la versión 2.0. Usa {@link AlumnoDtoController} en su lugar.
+ */
 @Deprecated
 @RestController
 @RequestMapping("/alumnos")

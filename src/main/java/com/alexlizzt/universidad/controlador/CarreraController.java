@@ -1,5 +1,6 @@
 package com.alexlizzt.universidad.controlador;
 
+import com.alexlizzt.universidad.controlador.dto.CarreraDtoController;
 import com.alexlizzt.universidad.modelo.entidades.Carrera;
 import com.alexlizzt.universidad.servicios.contratos.CarreraDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
+/**
+ * @deprecated Desde la versión 2.0. Usa {@link CarreraDtoController} en su lugar.
+ */
 @Deprecated
 @RestController
 @RequestMapping("/carreras")
