@@ -7,7 +7,6 @@ import com.alexlizzt.universidad.modelo.entidades.Persona;
 import com.alexlizzt.universidad.modelo.entidades.enumeradores.TipoEmpleado;
 import com.alexlizzt.universidad.servicios.contratos.EmpleadoDAO;
 import com.alexlizzt.universidad.servicios.contratos.PersonaDAO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
@@ -18,38 +17,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-
 /**
- * @deprecated Desde la versión 2.0. Usa {@link EmpleadoDtoController} en su lugar.
+ * @deprecated Desde la versión 2.0. Usa {@link EmpleadoDtoController} en su
+ *             lugar.
  */
-@Deprecated
+@Deprecated(since = "2.0", forRemoval = true)
 @RestController
 @RequestMapping("/empleados")
 @ConditionalOnProperty(prefix = "app", name = "controller.enable-dto", havingValue = "false")
-public class EmpleadoController extends PersonaController{
+public class EmpleadoController extends PersonaController {
 
-    @Autowired
     public EmpleadoController(@Qualifier("empleadoDAOImpl") PersonaDAO empleadoDAO) {
         super(empleadoDAO);
     }
 
-    /*@Override
-    @GetMapping
-    public List<Persona> obtenerTodos(){
-        Stream<Persona> personas = ((List<Persona>) service.findAll()).stream();
-        List<Persona> empleados = personas.filter(persona -> persona instanceof Empleado).collect(Collectors.toList());
-        if(empleados.isEmpty()){
-            throw new BadRequestException("No se ha encontrado algun empleado");
-        }
-        return empleados;
-    }*/
-
+    /**
+     * @deprecated Desde la versión 2.0. Usa
+     *             {@link EmpleadoDtoController#buscarEmpleadoPorTipoEmpleado(TipoEmpleado)}
+     *             en su lugar.
+     */
+    @Deprecated(since = "2.0", forRemoval = true)
     @GetMapping("/tipoempleado")
-    public ResponseEntity<?> buscarEmpleadoPorTipoEmpleado(@RequestParam TipoEmpleado tipoEmpleado){
+    public ResponseEntity<?> buscarEmpleadoPorTipoEmpleado(@RequestParam TipoEmpleado tipoEmpleado) {
         Map<String, Object> mensaje = new HashMap<>();
-        List<Empleado> empleadoByTipoEmpleado = (List<Empleado>) ((EmpleadoDAO)service).findEmpleadoByTipoEmpleado(tipoEmpleado);
-        if(empleadoByTipoEmpleado.isEmpty()){
-            //throw new BadRequestException(String.format("No se ha encontrado algun empleado de tipo %s", tipoEmpleado));
+        List<Empleado> empleadoByTipoEmpleado = (List<Empleado>) ((EmpleadoDAO) service)
+                .findEmpleadoByTipoEmpleado(tipoEmpleado);
+        if (empleadoByTipoEmpleado.isEmpty()) {
             mensaje.put("success", Boolean.FALSE);
             mensaje.put("mensaje", String.format("No se ha encontrado algun empleado de tipo %s", tipoEmpleado));
             return ResponseEntity.badRequest().body(mensaje);
@@ -59,17 +52,22 @@ public class EmpleadoController extends PersonaController{
         return ResponseEntity.ok(mensaje);
     }
 
+    /**
+     * @deprecated Desde la versión 2.0. Usa
+     *             {@link EmpleadoDtoController#asignarPabellonEmpleado(Integer, Pabellon)}
+     *             en su lugar.
+     */
+    @Deprecated
     @PutMapping("{idEmpleado}/pabellon")
-    public ResponseEntity<?> asignarPabellonEmpleado(@PathVariable Integer idEmpleado, @RequestBody Pabellon pabellon){
+    public ResponseEntity<?> asignarPabellonEmpleado(@PathVariable Integer idEmpleado, @RequestBody Pabellon pabellon) {
         Map<String, Object> mensaje = new HashMap<>();
         Optional<Persona> oEmpleado = service.findById(idEmpleado);
-        if(!oEmpleado.isPresent()){
-            //throw new BadRequestException(String.format("El/La empleado/a con id %d no existe", idEmpleado));
+        if (!oEmpleado.isPresent()) {
             mensaje.put("success", Boolean.FALSE);
             mensaje.put("mensaje", String.format("El/La empleado/a con id %d no existe", idEmpleado));
             return ResponseEntity.badRequest().body(mensaje);
         }
-        Empleado empleado = (Empleado)oEmpleado.get();
+        Empleado empleado = (Empleado) oEmpleado.get();
         empleado.setPabellon(pabellon);
 
         mensaje.put("datos", service.save(empleado));

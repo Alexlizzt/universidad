@@ -18,22 +18,27 @@ import java.util.Map;
 /**
  * @deprecated Desde la versión 2.0. Usa {@link AulaDtoController} en su lugar.
  */
-@Deprecated
+@Deprecated(since = "2.0", forRemoval = true)
 @RestController
 @RequestMapping("/aulas")
 @ConditionalOnProperty(prefix = "app", name = "controller.enable-dto", havingValue = "false")
-public class AulaController extends GenericController<Aula, AulaDAO>{
+public class AulaController extends GenericController<Aula, AulaDAO> {
     public AulaController(AulaDAO service) {
         super(service);
-        nombreEntidad="Aula";
+        nombreEntidad = "Aula";
     }
 
+    /**
+     * @deprecated Desde la versión 2.0. Usa el endpoint correspondiente en
+     *             {@link AulaDtoController#buscarAulaPorPabellon(String)} en su
+     *             lugar.
+     */
+    @Deprecated(since = "2.0", forRemoval = true)
     @GetMapping("/pabellon")
-    public ResponseEntity<?> buscarAulaPorPabellon(@RequestParam String pabellon){
+    public ResponseEntity<?> buscarAulaPorPabellon(@RequestParam String pabellon) {
         Map<String, Object> mensaje = new HashMap<>();
         List<Aula> aulas = (List<Aula>) service.buscarAulasPorPabellon(pabellon);
-        if(aulas.isEmpty()){
-            //throw new BadRequestException(String.format("No se encontraron aulas en el pabellon %s", pabellon));
+        if (aulas.isEmpty()) {
             mensaje.put("success", Boolean.FALSE);
             mensaje.put("mensaje", String.format("No se encontraron aulas en el pabellon %s", pabellon));
             return ResponseEntity.badRequest().body(mensaje);
@@ -44,12 +49,17 @@ public class AulaController extends GenericController<Aula, AulaDAO>{
         return ResponseEntity.ok(mensaje);
     }
 
+    /**
+     * @deprecated Desde la versión 2.0. Usa el endpoint correspondiente en
+     *             {@link AulaDtoController#buscarAulaPorPizarron(Pizarron)} en su
+     *             lugar.
+     */
+    @Deprecated(since = "2.0", forRemoval = true)
     @GetMapping("/pizarron")
-    public ResponseEntity<?>buscarAulaPorPizarron(@RequestParam Pizarron tipoPizarron){
+    public ResponseEntity<?> buscarAulaPorPizarron(@RequestParam Pizarron tipoPizarron) {
         Map<String, Object> mensaje = new HashMap<>();
         List<Aula> aulas = (List<Aula>) service.buscarAulasPorPizarron(tipoPizarron);
-        if(aulas.isEmpty()){
-            //throw new BadRequestException(String.format("No se encontraron aulas con pizarron %s", tipoPizarron.toString()));
+        if (aulas.isEmpty()) {
             mensaje.put("success", Boolean.FALSE);
             mensaje.put("mensaje", String.format("No se encontraron aulas con pizarron %s", tipoPizarron.toString()));
             return ResponseEntity.badRequest().body(mensaje);
@@ -59,17 +69,22 @@ public class AulaController extends GenericController<Aula, AulaDAO>{
         return ResponseEntity.ok(mensaje);
     }
 
+    /**
+     * @deprecated Desde la versión 2.0. Usa el endpoint correspondiente en
+     *             {@link AulaDtoController#buscarAulaPorNumero(Integer)} en su
+     *             lugar.
+     */
+    @Deprecated(since = "2.0", forRemoval = true)
     @GetMapping("/num")
-    public ResponseEntity<?> buscarAulaPorNumero(@RequestParam Integer num){
+    public ResponseEntity<?> buscarAulaPorNumero(@RequestParam Integer num) {
         Map<String, Object> mensaje = new HashMap<>();
         Aula aula = service.buscarAulaporNumero(num);
         if (aula == null) {
-            //throw new BadRequestException(String.format("El aula con id %d no existe", num));
             mensaje.put("success", Boolean.FALSE);
             mensaje.put("mensaje", String.format("El aula con id %d no existe", num));
             return ResponseEntity.badRequest().body(mensaje);
         }
-        mensaje.put("datos",aula);
+        mensaje.put("datos", aula);
         mensaje.put("success", Boolean.TRUE);
         return ResponseEntity.ok(mensaje);
     }

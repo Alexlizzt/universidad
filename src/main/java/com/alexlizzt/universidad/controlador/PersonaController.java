@@ -13,24 +13,32 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * @deprecated Desde la versión 2.0. Usa {@link PersonaDtoController} en su lugar.
+ * @deprecated Desde la versión 2.0. Usa {@link PersonaDtoController} en su
+ *             lugar.
  */
-@Deprecated
+@Deprecated(since = "2.0", forRemoval = true)
 public class PersonaController extends GenericController<Persona, PersonaDAO> {
 
     public PersonaController(PersonaDAO service) {
         super(service);
     }
 
+    /**
+     * @deprecated Desde la versión 2.0. Usa el endpoint
+     *             /personas/dto/nombre-apellido
+     *             en {@link PersonaDtoController}.
+     */
+    @Deprecated
     @GetMapping("/nombre-apellido")
-    public ResponseEntity<?> buscarPersonaPorNombreyApellido(@RequestParam String nombre, @RequestParam String apellido){
+    public ResponseEntity<?> buscarPersonaPorNombreyApellido(@RequestParam String nombre,
+            @RequestParam String apellido) {
         Map<String, Object> mensaje = new HashMap<>();
 
         Optional<Persona> oPersona = service.buscarPorNombreYApellido(nombre, apellido);
-        if(!oPersona.isPresent()){
-            //throw new BadRequestException(String.format("No se encontro Persona con nombre %s y apellido %s", nombre, apellido));
+        if (!oPersona.isPresent()) {
             mensaje.put("success", Boolean.FALSE);
-            mensaje.put("mensaje", String.format("No se encontro Persona con nombre %s y apellido %s", nombre, apellido));
+            mensaje.put("mensaje",
+                    String.format("No se encontro Persona con nombre %s y apellido %s", nombre, apellido));
             return ResponseEntity.badRequest().body(mensaje);
         }
 
@@ -39,12 +47,16 @@ public class PersonaController extends GenericController<Persona, PersonaDAO> {
         return ResponseEntity.ok(mensaje);
     }
 
+    /**
+     * @deprecated Desde la versión 2.0. Usa el endpoint /personas/dto/apellido en
+     *             {@link PersonaDtoController}.
+     */
+    @Deprecated
     @GetMapping("/apellido")
-    public ResponseEntity<?> buscarPorApellido(@RequestParam String apellido){
+    public ResponseEntity<?> buscarPorApellido(@RequestParam String apellido) {
         Map<String, Object> mensaje = new HashMap<>();
         List<Persona> oPersona = (List<Persona>) service.buscarPersonasPorApellido(apellido);
-        if(oPersona.isEmpty()){
-            //throw new BadRequestException(String.format("No se encontraron Personas con apellido %s", apellido));
+        if (oPersona.isEmpty()) {
             mensaje.put("success", Boolean.FALSE);
             mensaje.put("mensaje", String.format("No se encontraron Personas con apellido %s", apellido));
             return ResponseEntity.badRequest().body(mensaje);
@@ -54,12 +66,16 @@ public class PersonaController extends GenericController<Persona, PersonaDAO> {
         return ResponseEntity.ok(mensaje);
     }
 
+    /**
+     * @deprecated Desde la versión 2.0. Usa el endpoint /personas/dto/dni en
+     *             {@link PersonaDtoController}.
+     */
+    @Deprecated
     @GetMapping("/dni")
-    public ResponseEntity<?> buscarPorDni(@RequestParam String dni){
+    public ResponseEntity<?> buscarPorDni(@RequestParam String dni) {
         Map<String, Object> mensaje = new HashMap<>();
         Optional<Persona> oPersona = service.buscarPorDni(dni);
-        if(!oPersona.isPresent()){
-            //throw new BadRequestException(String.format("No se encontro Persona con dni %d", dni));
+        if (!oPersona.isPresent()) {
             mensaje.put("success", Boolean.FALSE);
             mensaje.put("mensaje", String.format("No se encontro Persona con dni %s", dni));
             return ResponseEntity.badRequest().body(mensaje);
@@ -68,5 +84,5 @@ public class PersonaController extends GenericController<Persona, PersonaDAO> {
         mensaje.put("success", Boolean.TRUE);
         return ResponseEntity.ok(mensaje);
     }
-    
+
 }

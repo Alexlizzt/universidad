@@ -15,25 +15,30 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @deprecated Desde la versión 2.0. Usa {@link PabellonDtoController} en su lugar.
+ * @deprecated Desde la versión 2.0. Usa {@link PabellonDtoController} en su
+ *             lugar.
  */
-@Deprecated
+@Deprecated(since = "2.0", forRemoval = true)
 @RestController
 @RequestMapping("/pabellones")
 @ConditionalOnProperty(prefix = "app", name = "controller.enable-dto", havingValue = "false")
-public class PabellonController extends GenericController<Pabellon, PabellonDAO>{
+public class PabellonController extends GenericController<Pabellon, PabellonDAO> {
 
     public PabellonController(PabellonDAO service) {
         super(service);
-        nombreEntidad="Pabellon";
+        nombreEntidad = "Pabellon";
     }
 
+    /**
+     * @deprecated Desde la versión 2.0. Usa el endpoint /pabellones/dto/localidad
+     *             en {@link PabellonDtoController}.
+     */
+    @Deprecated
     @GetMapping("/localodad")
-    public ResponseEntity<?> buscarPabellonesPorLocalidad(@RequestParam String localidad){
+    public ResponseEntity<?> buscarPabellonesPorLocalidad(@RequestParam String localidad) {
         Map<String, Object> mensaje = new HashMap<>();
         List<Pabellon> pabellones = (List<Pabellon>) service.buscarPabellonPorLocalidad(localidad);
-        if(pabellones.isEmpty()){
-            //throw new BadRequestException(String.format("No se encontraron Pabellones en la localidad %s", localidad));
+        if (pabellones.isEmpty()) {
             mensaje.put("success", Boolean.FALSE);
             mensaje.put("mensaje", String.format("No se encontraron Pabellones en la localidad %s", localidad));
             return ResponseEntity.badRequest().body(mensaje);
@@ -43,12 +48,16 @@ public class PabellonController extends GenericController<Pabellon, PabellonDAO>
         return ResponseEntity.ok(mensaje);
     }
 
+    /**
+     * @deprecated Desde la versión 2.0. Usa el endpoint /pabellones/dto/nombre en
+     *             {@link PabellonDtoController}.
+     */
+    @Deprecated
     @GetMapping("/nombre")
-    public ResponseEntity<?> buscarPabellonPorNombre(@RequestParam String nombre){
+    public ResponseEntity<?> buscarPabellonPorNombre(@RequestParam String nombre) {
         Map<String, Object> mensaje = new HashMap<>();
         List<Pabellon> pabellones = (List<Pabellon>) service.buscarPabellonPorNombre(nombre);
-        if(pabellones.isEmpty()){
-            //throw new BadRequestException(String.format("No se encontraron Pabellones con nombre %s", nombre));
+        if (pabellones.isEmpty()) {
             mensaje.put("success", Boolean.FALSE);
             mensaje.put("mensaje", String.format("No se encontraron Pabellones con nombre %s", nombre));
             return ResponseEntity.badRequest().body(mensaje);

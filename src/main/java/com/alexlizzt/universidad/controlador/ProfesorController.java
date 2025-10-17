@@ -4,10 +4,8 @@ import com.alexlizzt.universidad.controlador.dto.ProfesorDtoController;
 import com.alexlizzt.universidad.modelo.entidades.Carrera;
 import com.alexlizzt.universidad.modelo.entidades.Profesor;
 import com.alexlizzt.universidad.modelo.entidades.Persona;
-import com.alexlizzt.universidad.servicios.contratos.CarreraDAO;
 import com.alexlizzt.universidad.servicios.contratos.PersonaDAO;
 import com.alexlizzt.universidad.servicios.contratos.ProfesorDAO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
@@ -16,42 +14,34 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 /**
- * @deprecated Desde la versión 2.0. Usa {@link ProfesorDtoController} en su lugar.
+ * @deprecated Desde la versión 2.0. Usa {@link ProfesorDtoController} en su
+ *             lugar.
  */
-@Deprecated
+@Deprecated(since = "2.0", forRemoval = true)
 @RestController
 @RequestMapping("/profesores")
 @ConditionalOnProperty(prefix = "app", name = "controller.enable-dto", havingValue = "false")
 public class ProfesorController extends PersonaController {
 
-    private final CarreraDAO carreraDAO;
     private final ProfesorDAO profesorDAO;
 
-    @Autowired
-    public ProfesorController(@Qualifier("profesorDAOImpl") PersonaDAO service, CarreraDAO carreraDAO, ProfesorDAO profesorDAO) {
+    public ProfesorController(@Qualifier("profesorDAOImpl") PersonaDAO service, ProfesorDAO profesorDAO) {
         super(service);
-        this.carreraDAO = carreraDAO;
         this.profesorDAO = profesorDAO;
         nombreEntidad = "Profesor";
     }
 
     /**
-    @GetMapping
-    public List<Persona> obtenerTodos(){
-        Stream<Persona> personas = ((List<Persona>) service.findAll()).stream();
-        List<Persona> profesores = personas.filter(persona -> persona instanceof Profesor).collect(Collectors.toList());
-        if(profesores.isEmpty()){
-            throw new BadRequestException("No se ha encontrado algun profesor");
-        }
-        return profesores;
-    }**/
-
+     * @deprecated Usa
+     *             {@link ProfesorDtoController#buscarProfesoresPorCarrera(String)}
+     *             en su lugar.
+     */
+    @Deprecated
     @GetMapping("/carrera")
-    public ResponseEntity<?> buscarProfesoresPorCarrera(@RequestParam String carrera){
+    public ResponseEntity<?> buscarProfesoresPorCarrera(@RequestParam String carrera) {
         Map<String, Object> mensaje = new HashMap<>();
         List<Profesor> profesoresByCarrera = (List<Profesor>) profesorDAO.findProfesoresByCarrera(carrera);
-        if(profesoresByCarrera.isEmpty()){
-            //throw new BadRequestException("No se ha encontrado algun profesor");
+        if (profesoresByCarrera.isEmpty()) {
             mensaje.put("success", Boolean.FALSE);
             mensaje.put("mensaje", String.format("No se ha encontrado algun profesor en la carrera %s", carrera));
             return ResponseEntity.badRequest().body(mensaje);
@@ -61,17 +51,23 @@ public class ProfesorController extends PersonaController {
         return ResponseEntity.ok(mensaje);
     }
 
+    /**
+     * @deprecated Usa
+     *             {@link ProfesorDtoController#asignarCarrerasProfesor(Integer, Set)}
+     *             en su lugar.
+     */
+    @Deprecated
     @PutMapping("{idProfesor}/carrera/{idCarreras}")
-    public ResponseEntity<?> asignarCarrerasProfesor(@PathVariable Integer idProfesor, @PathVariable Set<Carrera> idCarreras){
+    public ResponseEntity<?> asignarCarrerasProfesor(@PathVariable Integer idProfesor,
+            @PathVariable Set<Carrera> idCarreras) {
         Map<String, Object> mensaje = new HashMap<>();
         Optional<Persona> oProfesor = service.findById(idProfesor);
-        if(!oProfesor.isPresent()){
-            //throw new BadRequestException(String.format("El/La profesor/a con id %d no existe", idProfesor));
+        if (!oProfesor.isPresent()) {
             mensaje.put("success", Boolean.FALSE);
             mensaje.put("mensaje", String.format("El/La profesor/a con id %d no existe", idProfesor));
             return ResponseEntity.badRequest().body(mensaje);
         }
-        Profesor profesor= (Profesor) oProfesor.get();
+        Profesor profesor = (Profesor) oProfesor.get();
         profesor.setCarreras(idCarreras);
 
         mensaje.put("datos", service.save(profesor));
