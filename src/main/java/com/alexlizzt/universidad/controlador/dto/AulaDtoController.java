@@ -6,6 +6,7 @@ import com.alexlizzt.universidad.modelo.entidades.enumeradores.Pizarron;
 import com.alexlizzt.universidad.modelo.entidades.mapper.mapstruct.AulaMapperMS;
 import com.alexlizzt.universidad.servicios.contratos.AulaDAO;
 
+import com.alexlizzt.universidad.utils.JsonKeys;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -38,26 +39,26 @@ public class AulaDtoController extends GenericDtoController<Aula, AulaDAO> {
     @GetMapping
     @Operation(summary = "Consultar todas las aulas")
     @ApiResponse(responseCode = "200", description = "Consulta exitosa")
-    public ResponseEntity<?> obtenerAulas() {
+    public ResponseEntity<Map<String, Object>> obtenerAulas() {
         Map<String, Object> mensaje = new HashMap<>();
         List<Aula> aulas = (List<Aula>) service.findAll();
 
         if (aulas.isEmpty()) {
-            mensaje.put("success", Boolean.FALSE);
-            mensaje.put("mensaje", String.format("No se encontraron las %ss cargadas", nombre_entidad));
+            mensaje.put(JsonKeys.SUCCESS, Boolean.FALSE);
+            mensaje.put(JsonKeys.MESSAGE, String.format("No se encontraron las %ss cargadas", nombreEntidad));
             return ResponseEntity.badRequest().body(mensaje);
         }
 
         List<AulaDTO> aulaDTOS = aulaMapper.mapAula(aulas);
 
-        mensaje.put("success", Boolean.TRUE);
-        mensaje.put("data", aulaDTOS);
+        mensaje.put(JsonKeys.SUCCESS, Boolean.TRUE);
+        mensaje.put(JsonKeys.DATA, aulaDTOS);
         return ResponseEntity.ok(mensaje);
     }
 
     @PostMapping
     @Operation(summary = "Agregar un aula nueva")
-    public ResponseEntity<?> agregarAula(
+    public ResponseEntity<Map<String, Object>> agregarAula(
             @Valid @RequestBody
             @Parameter(description = "Datos del aula a registrar") AulaDTO aulaDTO,
             BindingResult result) {
@@ -65,19 +66,19 @@ public class AulaDtoController extends GenericDtoController<Aula, AulaDAO> {
         Map<String, Object> mensaje = new HashMap<>();
 
         if (result.hasErrors()) {
-            mensaje.put("success", Boolean.FALSE);
-            mensaje.put("validaciones", super.obtenerValidaciones(result));
+            mensaje.put(JsonKeys.SUCCESS, Boolean.FALSE);
+            mensaje.put(JsonKeys.VALIDATIONS, super.obtenerValidaciones(result));
             return ResponseEntity.badRequest().body(mensaje);
         }
 
-        mensaje.put("datos", super.agregarEntidad(aulaMapper.mapAula(aulaDTO)));
-        mensaje.put("success", Boolean.TRUE);
+        mensaje.put(JsonKeys.DATA, super.agregarEntidad(aulaMapper.mapAula(aulaDTO)));
+        mensaje.put(JsonKeys.SUCCESS, Boolean.TRUE);
         return ResponseEntity.status(HttpStatus.CREATED).body(mensaje);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Consultar aula por ID")
-    public ResponseEntity<?> obtenerAulaPorId(
+    public ResponseEntity<Map<String, Object>> obtenerAulaPorId(
             @PathVariable
             @Parameter(description = "ID del aula") Integer id) {
 
@@ -85,19 +86,19 @@ public class AulaDtoController extends GenericDtoController<Aula, AulaDAO> {
         Optional<Aula> oAula = service.findById(id);
 
         if (oAula.isEmpty()) {
-            mensaje.put("success", Boolean.FALSE);
-            mensaje.put("mensaje", String.format("El aula con id %d no existe", id));
+            mensaje.put(JsonKeys.SUCCESS, Boolean.FALSE);
+            mensaje.put(JsonKeys.MESSAGE, String.format("El aula con id %d no existe", id));
             return ResponseEntity.badRequest().body(mensaje);
         }
 
-        mensaje.put("datos", aulaMapper.mapAula(oAula.get()));
-        mensaje.put("success", Boolean.TRUE);
+        mensaje.put(JsonKeys.DATA, aulaMapper.mapAula(oAula.get()));
+        mensaje.put(JsonKeys.SUCCESS, Boolean.TRUE);
         return ResponseEntity.ok(mensaje);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar datos del aula")
-    public ResponseEntity<?> actualizarAula(
+    public ResponseEntity<Map<String, Object>> actualizarAula(
             @PathVariable
             @Parameter(description = "ID del aula a actualizar") Integer id,
             @Valid @RequestBody
@@ -107,8 +108,8 @@ public class AulaDtoController extends GenericDtoController<Aula, AulaDAO> {
         Optional<Aula> oAula = service.findById(id);
 
         if (oAula.isEmpty()) {
-            mensaje.put("success", Boolean.FALSE);
-            mensaje.put("mensaje", String.format("El aula con id %d no existe", id));
+            mensaje.put(JsonKeys.SUCCESS, Boolean.FALSE);
+            mensaje.put(JsonKeys.MESSAGE, String.format("El aula con id %d no existe", id));
             return ResponseEntity.badRequest().body(mensaje);
         }
 
@@ -120,24 +121,24 @@ public class AulaDtoController extends GenericDtoController<Aula, AulaDAO> {
         aulaUpdate.setCantidadPupitres(aula.getCantidadPupitres());
         aulaUpdate.setPizarron(aula.getPizarron());
 
-        mensaje.put("datos", service.save(aulaUpdate));
-        mensaje.put("success", Boolean.TRUE);
+        mensaje.put(JsonKeys.DATA, service.save(aulaUpdate));
+        mensaje.put(JsonKeys.SUCCESS, Boolean.TRUE);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(mensaje);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar aula por ID")
-    public ResponseEntity<?> borrarAula(
+    public ResponseEntity<Void> borrarAula(
             @PathVariable
             @Parameter(description = "ID del aula a eliminar") Integer id) {
 
-        service.deteteById(id);
+        service.deleteById(id);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     @GetMapping("/pabellon")
     @Operation(summary = "Buscar aulas por nombre de pabellón")
-    public ResponseEntity<?> buscarAulaPorPabellon(
+    public ResponseEntity<Map<String, Object>> buscarAulaPorPabellon(
             @RequestParam
             @Parameter(description = "Nombre del pabellón") String pabellon) {
 
@@ -145,19 +146,19 @@ public class AulaDtoController extends GenericDtoController<Aula, AulaDAO> {
         List<Aula> aulas = (List<Aula>) service.buscarAulasPorPabellon(pabellon);
 
         if (aulas.isEmpty()) {
-            mensaje.put("success", Boolean.FALSE);
-            mensaje.put("mensaje", String.format("No se encontraron aulas en el pabellón %s", pabellon));
+            mensaje.put(JsonKeys.SUCCESS, Boolean.FALSE);
+            mensaje.put(JsonKeys.MESSAGE, String.format("No se encontraron aulas en el pabellón %s", pabellon));
             return ResponseEntity.badRequest().body(mensaje);
         }
 
-        mensaje.put("datos", aulas);
-        mensaje.put("success", Boolean.TRUE);
+        mensaje.put(JsonKeys.DATA, aulas);
+        mensaje.put(JsonKeys.SUCCESS, Boolean.TRUE);
         return ResponseEntity.ok(mensaje);
     }
 
     @GetMapping("/pizarron")
     @Operation(summary = "Buscar aulas por tipo de pizarrón")
-    public ResponseEntity<?> buscarAulaPorPizarron(
+    public ResponseEntity<Map<String, Object>> buscarAulaPorPizarron(
             @RequestParam
             @Parameter(description = "Tipo de pizarrón (e.g. PIZARRA_BLANCA, PIZARRA_TIZA)") Pizarron tipoPizarron) {
 
@@ -165,19 +166,19 @@ public class AulaDtoController extends GenericDtoController<Aula, AulaDAO> {
         List<Aula> aulas = (List<Aula>) service.buscarAulasPorPizarron(tipoPizarron);
 
         if (aulas.isEmpty()) {
-            mensaje.put("success", Boolean.FALSE);
-            mensaje.put("mensaje", String.format("No se encontraron aulas con pizarrón %s", tipoPizarron));
+            mensaje.put(JsonKeys.SUCCESS, Boolean.FALSE);
+            mensaje.put(JsonKeys.MESSAGE, String.format("No se encontraron aulas con pizarrón %s", tipoPizarron));
             return ResponseEntity.badRequest().body(mensaje);
         }
 
-        mensaje.put("datos", aulas);
-        mensaje.put("success", Boolean.TRUE);
+        mensaje.put(JsonKeys.DATA, aulas);
+        mensaje.put(JsonKeys.SUCCESS, Boolean.TRUE);
         return ResponseEntity.ok(mensaje);
     }
 
     @GetMapping("/num")
     @Operation(summary = "Buscar aula por número")
-    public ResponseEntity<?> buscarAulaPorNumero(
+    public ResponseEntity<Map<String, Object>> buscarAulaPorNumero(
             @RequestParam
             @Parameter(description = "Número del aula") Integer num) {
 
@@ -185,13 +186,13 @@ public class AulaDtoController extends GenericDtoController<Aula, AulaDAO> {
         Aula aula = service.buscarAulaporNumero(num);
 
         if (aula == null) {
-            mensaje.put("success", Boolean.FALSE);
-            mensaje.put("mensaje", String.format("El aula con número %d no existe", num));
+            mensaje.put(JsonKeys.SUCCESS, Boolean.FALSE);
+            mensaje.put(JsonKeys.MESSAGE, String.format("El aula con número %d no existe", num));
             return ResponseEntity.badRequest().body(mensaje);
         }
 
-        mensaje.put("datos", aula);
-        mensaje.put("success", Boolean.TRUE);
+        mensaje.put(JsonKeys.DATA, aula);
+        mensaje.put(JsonKeys.SUCCESS, Boolean.TRUE);
         return ResponseEntity.ok(mensaje);
     }
 }

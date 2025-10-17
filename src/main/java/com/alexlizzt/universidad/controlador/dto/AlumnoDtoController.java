@@ -6,6 +6,7 @@ import com.alexlizzt.universidad.modelo.entidades.dto.AlumnoDTO;
 import com.alexlizzt.universidad.modelo.entidades.dto.PersonaDTO;
 import com.alexlizzt.universidad.modelo.entidades.mapper.mapstruct.AlumnoMapper;
 import com.alexlizzt.universidad.servicios.contratos.PersonaDAO;
+import com.alexlizzt.universidad.utils.JsonKeys;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -23,8 +24,8 @@ import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping("/alumnos")
@@ -39,16 +40,17 @@ public class AlumnoDtoController extends PersonaDtoController {
     @GetMapping
     @Operation(summary = "Consultar todos los alumnos", description = "Devuelve todos los alumnos registrados")
     @ApiResponse(responseCode = "200", description = "Consulta exitosa")
-    public ResponseEntity<?> obtenerAlumnos() {
+    public ResponseEntity<Map<String, Object>> obtenerAlumnos() {
         Map<String, Object> mensaje = new HashMap<>();
-        Stream<Persona> personas = ((List<Persona>) super.obtenerTodos()).stream();
+        Stream<Persona> personas = StreamSupport.stream(super.obtenerTodos().spliterator(), false);
+
         List<Persona> alumnos = personas
-                .filter(persona -> persona instanceof Alumno)
-                .collect(Collectors.toList());
+                .filter(Alumno.class::isInstance)
+                .toList();
 
         if (alumnos.isEmpty()) {
-            mensaje.put("success", Boolean.FALSE);
-            mensaje.put("mensaje", String.format("No se encontraron los %ss cargados", nombre_entidad));
+            mensaje.put(JsonKeys.SUCCESS, Boolean.FALSE);
+            mensaje.put(JsonKeys.MESSAGE, String.format("No se encontraron los %ss cargados", nombreEntidad));
             return ResponseEntity.badRequest().body(mensaje);
         }
 
@@ -65,7 +67,7 @@ public class AlumnoDtoController extends PersonaDtoController {
             @ApiResponse(responseCode = "201", description = "Alumno creado exitosamente"),
             @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
     })
-    public ResponseEntity<?> agregarAlumno(
+    public ResponseEntity<Map<String, Object>> agregarAlumno(
             @Valid @RequestBody
             @Parameter(description = "Alumno a registrar") PersonaDTO personaDTO,
             BindingResult result) {
@@ -73,8 +75,8 @@ public class AlumnoDtoController extends PersonaDtoController {
         Map<String, Object> mensaje = new HashMap<>();
 
         if (result.hasErrors()) {
-            mensaje.put("success", Boolean.FALSE);
-            mensaje.put("validaciones", super.obtenerValidaciones(result));
+            mensaje.put(JsonKeys.SUCCESS, Boolean.FALSE);
+            mensaje.put(JsonKeys.VALIDATIONS, super.obtenerValidaciones(result));
             return ResponseEntity.badRequest().body(mensaje);
         }
 
@@ -90,7 +92,7 @@ public class AlumnoDtoController extends PersonaDtoController {
             @ApiResponse(responseCode = "200", description = "Alumno encontrado"),
             @ApiResponse(responseCode = "400", description = "Alumno no encontrado", content = @Content)
     })
-    public ResponseEntity<?> obtenerAlumnoPorId(
+    public ResponseEntity<Map<String, Object>> obtenerAlumnoPorId(
             @PathVariable
             @Parameter(description = "ID del alumno a consultar") Integer id) {
 
@@ -98,13 +100,13 @@ public class AlumnoDtoController extends PersonaDtoController {
         PersonaDTO dto = super.buscarPersonaPorId(id);
 
         if (dto == null) {
-            mensaje.put("success", Boolean.FALSE);
-            mensaje.put("mensaje", String.format("No existe %s con ID %d", nombre_entidad, id));
+            mensaje.put(JsonKeys.SUCCESS, Boolean.FALSE);
+            mensaje.put(JsonKeys.MESSAGE, String.format("No existe %s con ID %d", nombreEntidad, id));
             return ResponseEntity.badRequest().body(mensaje);
         }
 
-        mensaje.put("success", Boolean.TRUE);
-        mensaje.put("data", alumnoMapper.mapAlumno((AlumnoDTO) dto));
+        mensaje.put(JsonKeys.SUCCESS, Boolean.TRUE);
+        mensaje.put(JsonKeys.DATA, alumnoMapper.mapAlumno((AlumnoDTO) dto));
         return ResponseEntity.ok(mensaje);
     }
 
@@ -114,7 +116,7 @@ public class AlumnoDtoController extends PersonaDtoController {
             @ApiResponse(responseCode = "202", description = "Alumno actualizado exitosamente"),
             @ApiResponse(responseCode = "400", description = "Datos inválidos o alumno no encontrado", content = @Content)
     })
-    public ResponseEntity<?> actualizarAlumno(
+    public ResponseEntity<Map<String, Object>> actualizarAlumno(
             @PathVariable
             @Parameter(description = "ID del alumno a actualizar") Integer id,
             @Valid @RequestBody
@@ -124,15 +126,15 @@ public class AlumnoDtoController extends PersonaDtoController {
         Map<String, Object> mensaje = new HashMap<>();
 
         if (result.hasErrors()) {
-            mensaje.put("success", Boolean.FALSE);
-            mensaje.put("validaciones", super.obtenerValidaciones(result));
+            mensaje.put(JsonKeys.SUCCESS, Boolean.FALSE);
+            mensaje.put(JsonKeys.VALIDATIONS, super.obtenerValidaciones(result));
             return ResponseEntity.badRequest().body(mensaje);
         }
 
         PersonaDTO personaDTO = super.buscarPersonaPorId(id);
         if (personaDTO == null) {
-            mensaje.put("success", Boolean.FALSE);
-            mensaje.put("mensaje", String.format("No existe %s con ID %d", nombre_entidad, id));
+            mensaje.put(JsonKeys.SUCCESS, Boolean.FALSE);
+            mensaje.put(JsonKeys.MESSAGE, String.format("No existe %s con ID %d", nombreEntidad, id));
             return ResponseEntity.badRequest().body(mensaje);
         }
 
@@ -144,18 +146,18 @@ public class AlumnoDtoController extends PersonaDtoController {
         alumnoUpdate.setDni(alumno.getDni());
         alumnoUpdate.setDireccion(alumno.getDireccion());
 
-        mensaje.put("datos", service.save(alumnoUpdate));
-        mensaje.put("success", Boolean.TRUE);
+        mensaje.put(JsonKeys.DATA, service.save(alumnoUpdate));
+        mensaje.put(JsonKeys.SUCCESS, Boolean.TRUE);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(mensaje);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar un alumno por ID")
     @ApiResponse(responseCode = "202", description = "Alumno eliminado exitosamente")
-    public ResponseEntity<?> borrarAlumno(
+    public ResponseEntity<Void> borrarAlumno(
             @PathVariable
             @Parameter(description = "ID del alumno a eliminar") Integer id) {
-        service.deteteById(id);
+        service.deleteById(id);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 }

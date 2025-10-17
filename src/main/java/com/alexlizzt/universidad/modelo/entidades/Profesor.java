@@ -7,22 +7,15 @@ import java.util.Set;
 @Entity
 @Table(name = "profesores")
 @PrimaryKeyJoinColumn(name = "persona_id")
-public class Profesor extends Persona{
+public class Profesor extends Persona {
 
     private BigDecimal sueldo;
 
-    @ManyToMany(
-            fetch = FetchType.LAZY,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE
-            }
-    )
-    @JoinTable(
-            name = "profesor_carrera",
-            joinColumns = @JoinColumn(name = "profesor_id"),
-            inverseJoinColumns = @JoinColumn(name = "carrera_id")
-    )
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "profesor_carrera", joinColumns = @JoinColumn(name = "profesor_id"), inverseJoinColumns = @JoinColumn(name = "carrera_id"))
     private Set<Carrera> carreras;
 
     public Profesor() {
@@ -47,6 +40,27 @@ public class Profesor extends Persona{
 
     public void setCarreras(Set<Carrera> carreras) {
         this.carreras = carreras;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof Profesor))
+            return false;
+        if (!super.equals(o))
+            return false;
+
+        Profesor profesor = (Profesor) o;
+
+        return sueldo != null ? sueldo.equals(profesor.sueldo) : profesor.sueldo == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (sueldo != null ? sueldo.hashCode() : 0);
+        return result;
     }
 
     @Override

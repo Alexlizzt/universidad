@@ -18,7 +18,7 @@ import java.util.Map;
  * @deprecated Desde la versión 2.0. Usa {@link PabellonDtoController} en su
  *             lugar.
  */
-@Deprecated(since = "2.0", forRemoval = true)
+@Deprecated(since = "2.0", forRemoval = false)
 @RestController
 @RequestMapping("/pabellones")
 @ConditionalOnProperty(prefix = "app", name = "controller.enable-dto", havingValue = "false")

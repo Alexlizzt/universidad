@@ -10,6 +10,8 @@ import com.alexlizzt.universidad.modelo.entidades.mapper.mapstruct.EmpleadoMappe
 import com.alexlizzt.universidad.modelo.entidades.mapper.mapstruct.ProfesorMapper;
 import com.alexlizzt.universidad.servicios.contratos.PersonaDAO;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,67 +21,72 @@ public class PersonaDtoController extends GenericDtoController<Persona, PersonaD
     protected ProfesorMapper profesorMapper;
     protected EmpleadoMapper empleadoMapper;
 
-    public PersonaDtoController(PersonaDAO service, String nombre_entidad, AlumnoMapper alumnoMapper) {
-        super(service, nombre_entidad);
+    public PersonaDtoController(PersonaDAO service, String nombreEntidad, AlumnoMapper alumnoMapper) {
+        super(service, nombreEntidad);
         this.alumnoMapper = alumnoMapper;
     }
 
-    public PersonaDtoController(PersonaDAO service, String nombre_entidad, ProfesorMapper profesorMapper) {
-        super(service, nombre_entidad);
+    public PersonaDtoController(PersonaDAO service, String nombreEntidad, ProfesorMapper profesorMapper) {
+        super(service, nombreEntidad);
         this.profesorMapper = profesorMapper;
     }
 
-    public PersonaDtoController(PersonaDAO service, String nombre_entidad, EmpleadoMapper empleadoMapper) {
-        super(service, nombre_entidad);
+    public PersonaDtoController(PersonaDAO service, String nombreEntidad, EmpleadoMapper empleadoMapper) {
+        super(service, nombreEntidad);
         this.empleadoMapper = empleadoMapper;
     }
 
-    public PersonaDTO obtenerPersonas(){
+    public List<PersonaDTO> obtenerPersonas(){
         List<Persona> personas = super.obtenerTodos();
-        PersonaDTO dto = null;
-        if(personas.isEmpty()){
-            return null;
-        }
-        if(personas instanceof Alumno) {
-            dto = alumnoMapper.mapAlumno((Alumno) personas);
-        } else if (personas instanceof Profesor){
-            dto = profesorMapper.mapProfesor((Profesor) personas);
-        } else if(personas instanceof Empleado) {
-            dto = empleadoMapper.mapEmpleado((Empleado) personas);
-        }
-        return dto;
+        if (personas.isEmpty()) {
+        return Collections.emptyList();
     }
 
-    public PersonaDTO agregarPersona(Persona persona){
+    List<PersonaDTO> dtos = new ArrayList<>();
+
+    for (Persona persona : personas) {
+        if (persona instanceof Alumno alumno) {
+            dtos.add(alumnoMapper.mapAlumno(alumno));
+        } else if (persona instanceof Profesor profesor) {
+            dtos.add(profesorMapper.mapProfesor(profesor));
+        } else if (persona instanceof Empleado empleado) {
+            dtos.add(empleadoMapper.mapEmpleado(empleado));
+        }
+    }
+        return dtos;
+    }
+
+    public PersonaDTO agregarPersona(Persona persona) {
         Persona personaEntidad = super.agregarEntidad(persona);
-        PersonaDTO dto = null;
-        if(personaEntidad instanceof Alumno) {
-            dto = alumnoMapper.mapAlumno((Alumno) personaEntidad);
-        } else if (personaEntidad instanceof Profesor){
-            dto = profesorMapper.mapProfesor((Profesor) personaEntidad);
-        } else if(personaEntidad instanceof Empleado) {
-            dto = empleadoMapper.mapEmpleado((Empleado) personaEntidad);
+
+        if (personaEntidad instanceof Alumno alumno) {
+            return alumnoMapper.mapAlumno(alumno);
+        } else if (personaEntidad instanceof Profesor profesor) {
+            return profesorMapper.mapProfesor(profesor);
+        } else if (personaEntidad instanceof Empleado empleado) {
+            return empleadoMapper.mapEmpleado(empleado);
         }
-        return dto;
+
+        return null; // o lanza una excepción si es un tipo desconocido
     }
 
-    public PersonaDTO buscarPersonaPorId(Integer id){
+    public PersonaDTO buscarPersonaPorId(Integer id) {
         Optional<Persona> oPersona = service.findById(id);
-        Persona persona = null;
-        PersonaDTO dto = null;
-        if(oPersona.isEmpty()){
+        if (oPersona.isEmpty()) {
             return null;
-        } else {
-            persona = oPersona.get();
         }
-        if (persona instanceof Alumno) {
-            dto = alumnoMapper.mapAlumno((Alumno) persona);
-        } else if (persona instanceof Profesor) {
-            dto = profesorMapper.mapProfesor((Profesor) persona);
-        } else if (persona instanceof Empleado) {
-            dto = empleadoMapper.mapEmpleado((Empleado) persona);
+
+        Persona persona = oPersona.get();
+
+        if (persona instanceof Alumno alumno) {
+            return alumnoMapper.mapAlumno(alumno);
+        } else if (persona instanceof Profesor profesor) {
+            return profesorMapper.mapProfesor(profesor);
+        } else if (persona instanceof Empleado empleado) {
+            return empleadoMapper.mapEmpleado(empleado);
         }
-        return dto;
+
+        return null; // o lanza una excepción si no es un tipo esperado
     }
 
 }

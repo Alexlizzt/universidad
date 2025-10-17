@@ -15,7 +15,7 @@ import java.util.Optional;
  * @deprecated Desde la versión 2.0. Usa {@link GenericDtoController} en su
  *             lugar.
  */
-@Deprecated(since = "2.0", forRemoval = true)
+@Deprecated(since = "2.0", forRemoval = false)
 public class GenericController<E, S extends GenericDAO<E>> {
 
     protected final S service;
@@ -71,7 +71,7 @@ public class GenericController<E, S extends GenericDAO<E>> {
 
     /**
      * @deprecated Desde la versión 2.0. Usa
-     *             {@link GenericDtoController#borrarPorId(Integer)} en su lugar.
+     *             {@link GenericDtoController} en su lugar.
      */
     @Deprecated
     @DeleteMapping("/{id}")
@@ -80,7 +80,7 @@ public class GenericController<E, S extends GenericDAO<E>> {
         if (!oEntidad.isPresent()) {
             throw new BadRequestException(String.format("La %s con id %d no existe", nombreEntidad, id));
         }
-        service.deteteById(id);
+        service.deleteById(id);
     }
 
 }

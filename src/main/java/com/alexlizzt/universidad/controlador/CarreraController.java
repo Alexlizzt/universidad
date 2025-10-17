@@ -18,7 +18,7 @@ import java.util.Optional;
  * @deprecated Desde la versión 2.0. Usa {@link CarreraDtoController} en su
  *             lugar.
  */
-@Deprecated(since = "2.0", forRemoval = true)
+@Deprecated(since = "2.0", forRemoval = false)
 @RestController
 @RequestMapping("/carreras")
 @ConditionalOnProperty(prefix = "app", name = "controller.enable-dto", havingValue = "false")
@@ -77,7 +77,7 @@ public class CarreraController extends GenericController<Carrera, CarreraDAO> {
 
     /**
      * @deprecated Desde la versión 2.0. Usa
-     *             {@link CarreraDtoController#buscarCarrerasQueContenganNombre(String)}
+     *             {@link CarreraDtoController}
      *             en su lugar.
      */
     @Deprecated(since = "2.0", forRemoval = true)
@@ -97,7 +97,7 @@ public class CarreraController extends GenericController<Carrera, CarreraDAO> {
 
     /**
      * @deprecated Desde la versión 2.0. Usa
-     *             {@link CarreraDtoController#buscarCarrerasQueContenganNombreNoCase(String)}
+     *             {@link CarreraDtoController}
      *             en su lugar.
      */
     @Deprecated(since = "2.0", forRemoval = true)
@@ -118,7 +118,7 @@ public class CarreraController extends GenericController<Carrera, CarreraDAO> {
 
     /**
      * @deprecated Desde la versión 2.0. Usa
-     *             {@link CarreraDtoController#buscarCarrerasConCantidadAnios(Integer)}
+     *             {@link CarreraDtoController}
      *             en su lugar.
      */
     @Deprecated(since = "2.0", forRemoval = true)

@@ -23,7 +23,7 @@ class ReporteControllerTest {
     @BeforeEach
     void setUp() throws Exception {
         reporteService = mock(ReporteService.class);
-        controller = new ReporteController();
+        controller = new ReporteController(reporteService);
 
         // inyectar mock en el campo privado reporteService
         Field f = ReporteController.class.getDeclaredField("reporteService");
@@ -32,14 +32,14 @@ class ReporteControllerTest {
     }
 
     @Test
-    void generarReporteGeneral() throws Exception {
+    void generarReporteGeneral(){
         byte[] expected = "PDF-GENERAL".getBytes();
         when(reporteService.generarReporteGeneral()).thenReturn(new ByteArrayInputStream(expected));
 
         ResponseEntity<byte[]> resp = controller.generarReporteGeneral();
 
         assertNotNull(resp);
-        assertEquals(200, resp.getStatusCodeValue());
+        assertEquals(200, resp.getStatusCode().value());
         HttpHeaders headers = resp.getHeaders();
         assertTrue(headers.containsKey("Content-Disposition"));
         assertTrue(headers.getFirst("Content-Disposition").contains("reporte-general.pdf"));
@@ -50,7 +50,7 @@ class ReporteControllerTest {
     }
 
     @Test
-    void generarReporteAlumnosPorCarrera() throws Exception {
+    void generarReporteAlumnosPorCarrera() {
         // obtener nombre de carrera desde DatosDummy
         Carrera c = DatosDummy.carrera01(true);
         String carreraNombre = c.getNombre();
@@ -62,7 +62,7 @@ class ReporteControllerTest {
         ResponseEntity<byte[]> resp = controller.generarReporteAlumnosPorCarrera(carreraNombre);
 
         assertNotNull(resp);
-        assertEquals(200, resp.getStatusCodeValue());
+        assertEquals(200, resp.getStatusCode().value());
         HttpHeaders headers = resp.getHeaders();
         assertTrue(headers.containsKey("Content-Disposition"));
         assertTrue(headers.getFirst("Content-Disposition").contains("reporte-alumnos.pdf"));

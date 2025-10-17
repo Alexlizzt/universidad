@@ -39,10 +39,10 @@ public abstract class Persona implements Serializable {
     })
     private Direccion direccion;
 
-    public Persona() {
+    protected Persona() {
     }
 
-    public Persona(Integer id, String nombre, String apellido, String dni, Direccion direccion) {
+    protected Persona(Integer id, String nombre, String apellido, String dni, Direccion direccion) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;

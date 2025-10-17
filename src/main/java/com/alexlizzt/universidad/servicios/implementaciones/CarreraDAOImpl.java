@@ -7,14 +7,12 @@ import com.alexlizzt.universidad.servicios.contratos.CarreraDAO;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CarreraDAOImpl extends GenericDAOImpl<Carrera, CarreraRepository> implements CarreraDAO {
 
-    @Autowired
     public CarreraDAOImpl(CarreraRepository repository) {
         super(repository);
     }

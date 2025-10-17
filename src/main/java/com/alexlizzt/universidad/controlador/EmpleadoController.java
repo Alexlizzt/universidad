@@ -21,7 +21,7 @@ import java.util.Optional;
  * @deprecated Desde la versión 2.0. Usa {@link EmpleadoDtoController} en su
  *             lugar.
  */
-@Deprecated(since = "2.0", forRemoval = true)
+@Deprecated(since = "2.0", forRemoval = false)
 @RestController
 @RequestMapping("/empleados")
 @ConditionalOnProperty(prefix = "app", name = "controller.enable-dto", havingValue = "false")
@@ -36,7 +36,7 @@ public class EmpleadoController extends PersonaController {
      *             {@link EmpleadoDtoController#buscarEmpleadoPorTipoEmpleado(TipoEmpleado)}
      *             en su lugar.
      */
-    @Deprecated(since = "2.0", forRemoval = true)
+    @Deprecated
     @GetMapping("/tipoempleado")
     public ResponseEntity<?> buscarEmpleadoPorTipoEmpleado(@RequestParam TipoEmpleado tipoEmpleado) {
         Map<String, Object> mensaje = new HashMap<>();
@@ -54,7 +54,7 @@ public class EmpleadoController extends PersonaController {
 
     /**
      * @deprecated Desde la versión 2.0. Usa
-     *             {@link EmpleadoDtoController#asignarPabellonEmpleado(Integer, Pabellon)}
+     *             {@link EmpleadoDtoController}
      *             en su lugar.
      */
     @Deprecated

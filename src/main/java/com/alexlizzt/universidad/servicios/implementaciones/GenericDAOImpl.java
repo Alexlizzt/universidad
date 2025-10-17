@@ -34,7 +34,7 @@ public class GenericDAOImpl <E, R extends CrudRepository<E, Integer>> implements
 
     @Override
     @Transactional
-    public void deteteById(Integer id) {
+    public void deleteById(Integer id) {
         repository.deleteById(id);
     }
 }

@@ -24,7 +24,8 @@ public class Empleado extends Persona {
     public Empleado() {
     }
 
-    public Empleado(Integer id, String nombre, String apellido, String dni, Direccion direccion, BigDecimal sueldo, TipoEmpleado tipoEmpleado) {
+    public Empleado(Integer id, String nombre, String apellido, String dni, Direccion direccion, BigDecimal sueldo,
+            TipoEmpleado tipoEmpleado) {
         super(id, nombre, apellido, dni, direccion);
         this.sueldo = sueldo;
         this.tipoEmpleado = tipoEmpleado;
@@ -52,6 +53,40 @@ public class Empleado extends Persona {
 
     public void setPabellon(Pabellon pabellon) {
         this.pabellon = pabellon;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof Empleado))
+            return false;
+        if (!super.equals(o))
+            return false;
+
+        Empleado empleado = (Empleado) o;
+
+        if (sueldo != null ? !sueldo.equals(empleado.sueldo) : empleado.sueldo != null)
+            return false;
+        if (tipoEmpleado != empleado.tipoEmpleado)
+            return false;
+
+        // Para evitar problemas con Lazy Loading, comparamos solo el ID del pabellon si
+        // no es null
+        if (pabellon != null && empleado.pabellon != null) {
+            return pabellon.getId().equals(empleado.pabellon.getId());
+        } else {
+            return pabellon == empleado.pabellon;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (sueldo != null ? sueldo.hashCode() : 0);
+        result = 31 * result + (tipoEmpleado != null ? tipoEmpleado.hashCode() : 0);
+        result = 31 * result + (pabellon != null && pabellon.getId() != null ? pabellon.getId().hashCode() : 0);
+        return result;
     }
 
     @Override

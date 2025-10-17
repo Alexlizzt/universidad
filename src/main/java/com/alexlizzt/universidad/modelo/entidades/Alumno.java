@@ -7,14 +7,11 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "alumnos")
 @PrimaryKeyJoinColumn(name = "persona_id")
-public class Alumno extends Persona{
+public class Alumno extends Persona {
 
-    @ManyToOne(
-            optional = false,
-            fetch = FetchType.LAZY
-    )
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "carrera_id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer","alumnos"})
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "alumnos" })
     private Carrera carrera;
 
     public Alumno() {
@@ -32,10 +29,33 @@ public class Alumno extends Persona{
         this.carrera = carrera;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof Alumno))
+            return false;
+        if (!super.equals(o))
+            return false;
+
+        Alumno alumno = (Alumno) o;
+
+        // Comparamos por carrera solo por ID para evitar problemas de carga perezosa
+        return carrera != null && alumno.carrera != null
+                ? carrera.getId().equals(alumno.carrera.getId())
+                : carrera == alumno.carrera;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (carrera != null && carrera.getId() != null ? carrera.getId().hashCode() : 0);
+        return result;
+    }
 
     @Override
     public String toString() {
         return super.toString() +
-           " Alumno{carrera=" + (carrera != null ? carrera.getNombre() : "Ninguna") + "}";
+                " Alumno{carrera=" + (carrera != null ? carrera.getNombre() : "Ninguna") + "}";
     }
 }

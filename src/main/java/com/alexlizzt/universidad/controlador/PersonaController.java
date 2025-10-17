@@ -16,7 +16,7 @@ import java.util.Optional;
  * @deprecated Desde la versión 2.0. Usa {@link PersonaDtoController} en su
  *             lugar.
  */
-@Deprecated(since = "2.0", forRemoval = true)
+@Deprecated(since = "2.0", forRemoval = false)
 public class PersonaController extends GenericController<Persona, PersonaDAO> {
 
     public PersonaController(PersonaDAO service) {

@@ -6,6 +6,8 @@ import com.alexlizzt.universidad.modelo.entidades.dto.EmpleadoDTO;
 import com.alexlizzt.universidad.modelo.entidades.dto.PersonaDTO;
 import com.alexlizzt.universidad.modelo.entidades.mapper.mapstruct.EmpleadoMapper;
 import com.alexlizzt.universidad.servicios.contratos.PersonaDAO;
+import com.alexlizzt.universidad.utils.JsonKeys;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,14 +22,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/empleados")
 @ConditionalOnProperty(prefix = "app", name = "controller.enable-dto", havingValue = "true")
 @Tag(name = "Empleados", description = "Aplicaciones relacionadas con los empleados")
-public class EmpleadoDtoController extends PersonaDtoController{
+public class EmpleadoDtoController extends PersonaDtoController {
 
     public EmpleadoDtoController(@Qualifier("empleadoDAOImpl") PersonaDAO service, EmpleadoMapper empleadoMapper) {
         super(service, "Empleado", empleadoMapper);
@@ -36,67 +37,72 @@ public class EmpleadoDtoController extends PersonaDtoController{
     @GetMapping
     @Operation(summary = "Consultar todos los empleados")
     @ApiResponse(responseCode = "200", description = "Ejecutado satisfactoriamente")
-    public ResponseEntity<?> obtenerEmpleados() {
+    public ResponseEntity<Map<String, Object>> obtenerEmpleados() {
         Map<String, Object> mensaje = new HashMap<>();
-        Stream<Persona> personas = ((List<Persona>) super.obtenerTodos()).stream();
-        List<Persona> empleados = personas.filter(persona -> persona instanceof Empleado).collect(Collectors.toList());
+        Stream<Persona> personas = super.obtenerTodos().stream();
+        List<Persona> empleados = personas.filter(Empleado.class::isInstance).toList();
 
-        if(empleados.isEmpty()){
-            mensaje.put("success", Boolean.FALSE);
-            mensaje.put("mensaje", String.format("No se encontrarn los %ss cargadas", nombre_entidad));
+        if (empleados.isEmpty()) {
+            mensaje.put(JsonKeys.SUCCESS, Boolean.FALSE);
+            mensaje.put(JsonKeys.MESSAGE, String.format("No se encontrarn los %ss cargadas", nombreEntidad));
             return ResponseEntity.badRequest().body(mensaje);
         }
         List<EmpleadoDTO> empleadoDTOS = empleadoMapper.mapEmpleado(empleados);
 
-        mensaje.put("success", Boolean.TRUE);
-        mensaje.put("data", empleadoDTOS);
+        mensaje.put(JsonKeys.SUCCESS, Boolean.TRUE);
+        mensaje.put(JsonKeys.DATA, empleadoDTOS);
         return ResponseEntity.ok(mensaje);
     }
 
     @PostMapping
     @Operation(summary = "Agregar empleado")
-    public ResponseEntity<?> agregarEmpleado(@RequestBody @Parameter(description = "Empleado de la universidad") PersonaDTO personaDTO, BindingResult result) {
+    public ResponseEntity<Map<String, Object>> agregarEmpleado(
+            @RequestBody @Parameter(description = "Empleado de la universidad") PersonaDTO personaDTO,
+            BindingResult result) {
         Map<String, Object> mensaje = new HashMap<>();
-        if(result.hasErrors()){
-            mensaje.put("success", Boolean.FALSE);
-            mensaje.put("validaciones", super.obtenerValidaciones(result));
+        if (result.hasErrors()) {
+            mensaje.put(JsonKeys.SUCCESS, Boolean.FALSE);
+            mensaje.put(JsonKeys.VALIDATIONS, super.obtenerValidaciones(result));
             return ResponseEntity.badRequest().body(mensaje);
         }
 
         PersonaDTO save = super.agregarPersona(empleadoMapper.mapEmpleado((EmpleadoDTO) personaDTO));
-        mensaje.put("success", Boolean.TRUE);
-        mensaje.put("data", save);
+        mensaje.put(JsonKeys.SUCCESS, Boolean.TRUE);
+        mensaje.put(JsonKeys.DATA, save);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(mensaje);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Consultar empleado por codigo")
-    public ResponseEntity<?> obtenerEmpleadoPorId(@PathVariable @Parameter(name = "Codigo del sistema") Integer id) {
+    public ResponseEntity<Map<String, Object>> obtenerEmpleadoPorId(
+            @PathVariable @Parameter(name = "Codigo del sistema") Integer id) {
         Map<String, Object> mensaje = new HashMap<>();
         PersonaDTO dto = super.buscarPersonaPorId(id);
 
-        if (dto == null){
-            mensaje.put("success", Boolean.FALSE);
-            mensaje.put("mensaje", String.format("No existe %s con ID %d", nombre_entidad, id));
+        if (dto == null) {
+            mensaje.put(JsonKeys.SUCCESS, Boolean.FALSE);
+            mensaje.put(JsonKeys.MESSAGE, String.format("No existe %s con ID %d", nombreEntidad, id));
             return ResponseEntity.badRequest().body(mensaje);
         }
 
-        mensaje.put("success", Boolean.TRUE);
-        mensaje.put("data", empleadoMapper.mapEmpleado((EmpleadoDTO) dto));
+        mensaje.put(JsonKeys.SUCCESS, Boolean.TRUE);
+        mensaje.put(JsonKeys.DATA, empleadoMapper.mapEmpleado((EmpleadoDTO) dto));
 
         return ResponseEntity.ok(mensaje);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar los datos del empleado")
-    public ResponseEntity<?> actualizarProfesor(@PathVariable Integer id, @RequestBody @Parameter(description = "Empleado de la universidad") EmpleadoDTO empleadoDTO, BindingResult result){
+    public ResponseEntity<Map<String, Object>> actualizarProfesor(@PathVariable Integer id,
+            @RequestBody @Parameter(description = "Empleado de la universidad") EmpleadoDTO empleadoDTO,
+            BindingResult result) {
         Map<String, Object> mensaje = new HashMap<>();
         Empleado empleadoUpdate = null;
         PersonaDTO personaDTO = super.buscarPersonaPorId(id);
-        if(result.hasErrors()){
-            mensaje.put("success", Boolean.FALSE);
-            mensaje.put("validaciones", super.obtenerValidaciones(result));
+        if (result.hasErrors()) {
+            mensaje.put(JsonKeys.SUCCESS, Boolean.FALSE);
+            mensaje.put(JsonKeys.VALIDATIONS, super.obtenerValidaciones(result));
             return ResponseEntity.badRequest().body(mensaje);
         }
 
@@ -117,8 +123,8 @@ public class EmpleadoDtoController extends PersonaDtoController{
 
     @DeleteMapping("/{id}")
     @Operation(description = "Eliminar empleado del sistema")
-    public ResponseEntity<?> borrarProfesor(@PathVariable Integer id){
-        service.deteteById(id);
+    public ResponseEntity<Void> borrarProfesor(@PathVariable Integer id) {
+        service.deleteById(id);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 

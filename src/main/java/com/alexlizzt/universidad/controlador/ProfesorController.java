@@ -17,7 +17,7 @@ import java.util.*;
  * @deprecated Desde la versión 2.0. Usa {@link ProfesorDtoController} en su
  *             lugar.
  */
-@Deprecated(since = "2.0", forRemoval = true)
+@Deprecated(since = "2.0", forRemoval = false)
 @RestController
 @RequestMapping("/profesores")
 @ConditionalOnProperty(prefix = "app", name = "controller.enable-dto", havingValue = "false")
@@ -53,7 +53,7 @@ public class ProfesorController extends PersonaController {
 
     /**
      * @deprecated Usa
-     *             {@link ProfesorDtoController#asignarCarrerasProfesor(Integer, Set)}
+     *             {@link ProfesorDtoController}
      *             en su lugar.
      */
     @Deprecated

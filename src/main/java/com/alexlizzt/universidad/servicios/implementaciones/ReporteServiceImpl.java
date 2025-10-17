@@ -12,14 +12,12 @@ import org.openpdf.text.pdf.PdfPTable;
 import org.openpdf.text.pdf.PdfWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -110,9 +108,9 @@ public class ReporteServiceImpl implements ReporteService {
             PdfPTable alumnosTable = new PdfPTable(3);
             addTableHeader(alumnosTable, new String[]{"ID", "Nombre", "Carrera"});
             List<Alumno> alumnos = StreamSupport.stream(alumnoDAO.findAll().spliterator(), false)
-                    .filter(p -> p instanceof Alumno)
-                    .map(p -> (Alumno) p)
-                    .collect(Collectors.toList());
+                    .filter(Alumno.class::isInstance)
+                    .map(Alumno.class::cast)
+                    .toList();
             for (Alumno alumno : alumnos) {
                 alumnosTable.addCell(String.valueOf(alumno.getId()));
                 alumnosTable.addCell(alumno.getNombre() + " " + alumno.getApellido());
@@ -127,9 +125,9 @@ public class ReporteServiceImpl implements ReporteService {
             PdfPTable profesoresTable = new PdfPTable(3);
             addTableHeader(profesoresTable, new String[]{"ID", "Nombre", "Sueldo"});
             List<Profesor> profesors = StreamSupport.stream(profesorDAO.findAll().spliterator(), false)
-                    .filter(p -> p instanceof Profesor)
+                    .filter(Profesor.class::isInstance)
                     .map(p -> (Profesor) p)
-                    .collect(Collectors.toList());
+                    .toList();
             for (Profesor profesor : profesors) {
                 profesoresTable.addCell(String.valueOf(profesor.getId()));
                 profesoresTable.addCell(profesor.getNombre() + " " + profesor.getApellido());
