@@ -3,6 +3,10 @@ package com.alexlizzt.universidad.servicios.implementaciones;
 import com.alexlizzt.universidad.modelo.entidades.Carrera;
 import com.alexlizzt.universidad.repositorios.CarreraRepository;
 import com.alexlizzt.universidad.servicios.contratos.CarreraDAO;
+
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,9 +37,14 @@ public class CarreraDAOImpl extends GenericDAOImpl<Carrera, CarreraRepository> i
         return repository.findCarrerasByCantidadAniosAfter(cantidadAnios);
     }
 
-    /*@Override
+    @Override
     @Transactional(readOnly = true)
-    public Iterable<Carrera> buscarCarrerasPorProfesorNombreYApellido(String nombre, String apellido) {
+    public Iterable<Carrera> findCarrerasByProfesorNombreApellido(String nombre, String apellido) {
         return repository.buscarCarrerasPorProfesorNombreYApellido(nombre, apellido);
-    }*/
+    }
+
+    @Override
+    public Set<Carrera> findAllById(List<Integer> listaIds) {
+        return repository.findAllByIdIn(listaIds);
+    }
 }

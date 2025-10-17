@@ -27,11 +27,11 @@ import java.util.Optional;
 @Tag(name = "Pabellones", description = "Aplicaciones relacionadas con los pabellones")
 public class PabellonDtoController extends GenericDtoController<Pabellon, PabellonDAO>{
 
-    @Autowired
-    private PabellonMapperMS pabellonMapper;
+    private final PabellonMapperMS pabellonMapper;
 
-    public PabellonDtoController(PabellonDAO service) {
+    public PabellonDtoController(PabellonDAO service, PabellonMapperMS pabellonMapper) {
         super(service, "Pabellon");
+        this.pabellonMapper = pabellonMapper;
     }
 
     @GetMapping

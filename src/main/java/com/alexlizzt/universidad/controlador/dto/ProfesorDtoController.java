@@ -6,6 +6,7 @@ import com.alexlizzt.universidad.modelo.entidades.Profesor;
 import com.alexlizzt.universidad.modelo.entidades.dto.PersonaDTO;
 import com.alexlizzt.universidad.modelo.entidades.dto.ProfesorDTO;
 import com.alexlizzt.universidad.modelo.entidades.mapper.mapstruct.ProfesorMapper;
+import com.alexlizzt.universidad.servicios.contratos.CarreraDAO;
 import com.alexlizzt.universidad.servicios.contratos.PersonaDAO;
 import com.alexlizzt.universidad.servicios.contratos.ProfesorDAO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,8 +31,11 @@ import java.util.stream.Stream;
 @Tag(name = "Profesores", description = "Aplicaciones relacionadas con los profesores")
 public class ProfesorDtoController extends PersonaDtoController {
 
-    public ProfesorDtoController(@Qualifier("profesorDAOImpl") PersonaDAO service, ProfesorMapper profesorMapper) {
+    private final CarreraDAO carreraService;
+
+    public ProfesorDtoController(CarreraDAO carreraService, @Qualifier("profesorDAOImpl") PersonaDAO service, ProfesorMapper profesorMapper) {
         super(service, "Profesor", profesorMapper);
+        this.carreraService = carreraService;
     }
 
     @GetMapping
@@ -39,7 +43,7 @@ public class ProfesorDtoController extends PersonaDtoController {
     @ApiResponse(responseCode = "200", description = "Ejecutado satisfactoriamente")
     public ResponseEntity<?> obtenerProfesores(){
         Map<String, Object> mensaje = new HashMap<>();
-        Stream<Persona> personas = ((List<Persona>) super.obtenerTodos()).stream();
+        Stream<Persona> personas = (super.obtenerTodos()).stream();
         List<Persona> profesores = personas.filter(persona -> persona instanceof Profesor).collect(Collectors.toList());
 
         if (profesores.isEmpty()){
@@ -128,7 +132,6 @@ public class ProfesorDtoController extends PersonaDtoController {
         Map<String, Object> mensaje = new HashMap<>();
         List<Profesor> profesoresByCarrera = (List<Profesor>)((ProfesorDAO)service).findProfesoresByCarrera(carrera);
         if(profesoresByCarrera.isEmpty()){
-            //throw new BadRequestException("No se ha encontrado algun profesor");
             mensaje.put("success", Boolean.FALSE);
             mensaje.put("mensaje", String.format("No se ha encontrado algun profesor en la carrera %s", carrera));
             return ResponseEntity.badRequest().body(mensaje);
@@ -138,24 +141,27 @@ public class ProfesorDtoController extends PersonaDtoController {
         return ResponseEntity.ok(mensaje);
     }
 
-    // TODO: Verificar funcionamiento
     @PutMapping("{idProfesor}/carrera/{idCarreras}")
-    @Operation(summary = "Asignar Carreras al profesor")
-    public ResponseEntity<?> asignarCarrerasProfesor(@PathVariable Integer idProfesor, @RequestBody Set<Carrera> idCarreras){
+    public ResponseEntity<?> asignarCarrerasProfesor( @PathVariable Integer idProfesor, @PathVariable List<Integer> idCarreras) {
+
+    // Aquí buscarías las carreras por ID, por ejemplo:
+    Set<Carrera> carreras = carreraService.findAllById(idCarreras);
+
+    Optional<Persona> oProfesor = service.findById(idProfesor);
+    if (!oProfesor.isPresent()) {
         Map<String, Object> mensaje = new HashMap<>();
-        Optional<Persona> oProfesor = service.findById(idProfesor);
-        if(!oProfesor.isPresent()){
-            //throw new BadRequestException(String.format("El/La profesor/a con id %d no existe", idProfesor));
-            mensaje.put("success", Boolean.FALSE);
-            mensaje.put("mensaje", String.format("El/La profesor/a con id %d no existe", idProfesor));
-            return ResponseEntity.badRequest().body(mensaje);
-        }
-        Profesor profesor= (Profesor) oProfesor.get();
-        profesor.setCarreras(idCarreras);
-
-        mensaje.put("datos", service.save(profesor));
-        mensaje.put("success", Boolean.TRUE);
-
-        return ResponseEntity.ok(mensaje);
+        mensaje.put("success", Boolean.FALSE);
+        mensaje.put("mensaje", String.format("El/La profesor/a con id %d no existe", idProfesor));
+        return ResponseEntity.badRequest().body(mensaje);
     }
+
+    Profesor profesor = (Profesor) oProfesor.get();
+    profesor.setCarreras(carreras);
+
+    Map<String, Object> mensaje = new HashMap<>();
+    mensaje.put("datos", service.save(profesor));
+    mensaje.put("success", Boolean.TRUE);
+    return ResponseEntity.ok(mensaje);
+    }
+
 }

@@ -27,11 +27,11 @@ import java.util.Optional;
 @Tag(name = "Carreras", description = "Aplicaciones relacionadas con las carreras")
 public class CarreraDtoController extends GenericDtoController<Carrera, CarreraDAO>{
 
-    @Autowired
-    private CarreraMapperMS carreraMapper;
+    private final CarreraMapperMS carreraMapper;
 
-    public CarreraDtoController(CarreraDAO service) {
+    public CarreraDtoController(CarreraDAO service, CarreraMapperMS carreraMapper) {
         super(service, "Carrera");
+        this.carreraMapper = carreraMapper;
     }
 
     @GetMapping

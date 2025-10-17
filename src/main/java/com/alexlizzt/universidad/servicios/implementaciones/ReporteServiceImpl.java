@@ -26,19 +26,22 @@ import java.util.stream.StreamSupport;
 @Service
 public class ReporteServiceImpl implements ReporteService {
 
-    @Autowired
-    private AlumnoDAO alumnoDAO;
+    private final AlumnoDAO alumnoDAO;
 
-    @Autowired
-    private ProfesorDAO profesorDAO;
+    private final ProfesorDAO profesorDAO;
 
-    @Autowired
-    private CarreraDAO carreraDAO;
+    private final CarreraDAO carreraDAO;
 
-    @Autowired
-    private PabellonDAO pabellonDAO;
+    private final PabellonDAO pabellonDAO;
 
     private static final Logger logger = LoggerFactory.getLogger(ReporteServiceImpl.class);
+
+    public ReporteServiceImpl(AlumnoDAO alumnoDAO, ProfesorDAO profesorDAO, CarreraDAO carreraDAO, PabellonDAO pabellonDAO) {
+        this.alumnoDAO = alumnoDAO;
+        this.profesorDAO = profesorDAO;
+        this.carreraDAO = carreraDAO;
+        this.pabellonDAO = pabellonDAO;
+    }
 
     @Override
     public ByteArrayInputStream generarReporteAlumnosPorCarrera(String nombreCarrera) {

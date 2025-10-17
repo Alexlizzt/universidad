@@ -1,6 +1,10 @@
 package com.alexlizzt.universidad.repositorios;
 
 import com.alexlizzt.universidad.modelo.entidades.Carrera;
+
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -15,4 +19,6 @@ public interface CarreraRepository extends CrudRepository<Carrera, Integer> {
 
     @Query("select c from Carrera c join c.profesores p where p.nombre = ?1 and p.apellido = ?2")
     Iterable<Carrera> buscarCarrerasPorProfesorNombreYApellido(String nombre, String apellido);
+
+    Set<Carrera> findAllByIdIn(List<Integer> listaIds);
 }
