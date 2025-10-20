@@ -6,8 +6,8 @@ API REST para administrar la información de una universidad, desarrollada con S
 
 ## 📦 Tecnologías y herramientas
 
-- Java 11
-- Spring Boot 2.5.6
+- Java 17
+- Spring Boot 3.5.6
 - PostgreSQL (vía Docker)
 - Maven
 - JUnit 5
@@ -25,7 +25,7 @@ API REST para administrar la información de una universidad, desarrollada con S
 
 Antes de ejecutar este proyecto, asegúrate de tener instalado:
 
-- [Java 11](https://adoptium.net)
+- [Java 17](https://adoptopenjdk.net/releases.html)
 - [Maven](https://maven.apache.org/)
 - [Docker & Docker Compose](https://docs.docker.com/get-docker/)
 - [Multipass](https://multipass.run/) (para CI/CD opcional)
@@ -216,8 +216,8 @@ Si desea integrar la compatibilidad con Jacoco, agrege la siguiente linea al fin
 ---
 ## 🗺️ Roadmap
 - [x] Integrar SonarQube para evaluar el código fuente.
-- [ ] Refactorización del código.
-- [ ] Integración con JasperReports.
+- [x] Refactorización del código.
+- [x] Integración con ~~JasperReports~~ OpenPDF.
 ---
 ## 🤝 Contribuciones
 
